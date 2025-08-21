@@ -1,0 +1,64 @@
+aside {
+  width: 30%;
+  height: max-content;
+  float: right;
+  font-style: italic;
+  background-color: rgb(197, 197, 197);
+}
+#mainBody {
+  width: 70%;
+  float: left;
+  background-color: lightgray;
+}
+article {
+  background-color: rgb(179, 179, 179);
+}
+footer {
+  width: 100%;
+  float: left;
+  background-color: rgb(136, 136, 136);
+}
+header {
+  background-color: rgb(136, 136, 136);
+}
+a:link {
+  color: rgb(7, 7, 201);
+  background-color: transparent;
+  text-decoration: none;
+}
+a:visited {
+  color: rgb(20, 20, 109);
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover {
+  color: rgb(55, 55, 184);
+  background-color: transparent;
+  text-decoration: underline;
+}
+a:active {
+  color: rgb(140, 140, 224);
+  background-color: transparent;
+  text-decoration: underline;
+}
+p {
+  margin-left: 10px;
+}
+h1 {
+  margin-left: 15px;
+}
+h2 {
+  margin-left: 15px;
+}
+h3 {
+  margin-left: 15px;
+}
+h4 {
+  margin-left: 15px;
+}
+h5 {
+  margin-left: 15px;
+}
+h6 {
+  margin-left: 15px;
+}
