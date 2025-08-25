@@ -5,6 +5,10 @@ td {
   border-collapse: collapse;
   padding: 30px;
 }
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
 .blackTile {
   background-color: black;
 }
@@ -12,5 +16,16 @@ td {
   background-color: white;
 }
 body {
-  background-color: rgb(163, 163, 163);
+  background-color: rgb(128, 128, 128);
+}
+#blackWin {
+  color: rgba(128, 128, 128, 0);
+  position: absolute;
+  font-size: 15cqw;
+  width: 95%;
+  text-align: center;
+  z-index: -1;
+}
+#mainDiv {
+  text-align: center;
 }
