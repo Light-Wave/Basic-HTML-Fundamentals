@@ -1,0 +1,16 @@
+table,
+th,
+td {
+  border: 5px dashed rgba(0, 0, 0, 0);
+  border-collapse: collapse;
+  padding: 30px;
+}
+.blackTile {
+  background-color: black;
+}
+.whiteTile {
+  background-color: white;
+}
+body {
+  background-color: rgb(163, 163, 163);
+}

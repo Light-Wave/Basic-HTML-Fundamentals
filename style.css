@@ -17,6 +17,7 @@ footer {
   width: 100%;
   float: left;
   background-color: rgb(136, 136, 136);
+  padding: 15px;
 }
 header {
   background-color: rgb(136, 136, 136);
@@ -61,4 +62,7 @@ h5 {
 }
 h6 {
   margin-left: 15px;
+}
+body {
+  background-color: rgb(238, 238, 238);
 }
