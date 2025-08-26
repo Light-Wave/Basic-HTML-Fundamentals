@@ -1,15 +1,18 @@
 "use strict";
-const mapSize = 5;
+const mapSize = 3;
 let lastMousedOver = [];
 const map = [];
 const hints = [];
 let hintsAreActive = false;
-let winFadeOutTime = 2000.0;
+let winFadeOutTime = 1200.0;
 let winTimeStamp = 0;
 let blackWin = true;
 const glowForce = 30;
 const glowSpeed = 600.0;
 let curentMouseoverColor = 128;
+let gameState = "play";
+let FadeOutID;
+let FadeInID;
 
 function GenerateMap() {
   let htmlOut = "";
@@ -35,11 +38,13 @@ function GenerateMap() {
     htmlOut += "</tr>";
   }
   htmlOut += "</table>";
-  htmlOut += '<button onclick="ToggleHints()">Hints</button>';
+  htmlOut += '<button onclick="ToggleHints()">Hints</button> ';
   htmlOut += '<button onclick="ScrableBoard()">Scramble</button>';
   htmlOut += "</div>";
 
   htmlOut += '<div id="blackWin"></div>';
+  htmlOut +=
+    '<div id="dot">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="ContinueGame()">.</a></div>';
 
   htmlOut += document.write(htmlOut);
 
@@ -56,6 +61,9 @@ function GenerateMap() {
   }
 }
 function ScrableBoard() {
+  if (gameState != "play") {
+    return;
+  }
   HideHints();
   for (let i = 0; i < mapSize; i++) {
     for (let j = 0; j < mapSize; j++) {
@@ -66,6 +74,9 @@ function ScrableBoard() {
   }
 }
 function ClickedTile(tileX, tileY) {
+  if (gameState != "play") {
+    return;
+  }
   hints[tileX][tileY] = !hints[tileX][tileY];
   GetNeigbors(tileX, tileY).forEach(FlipTile);
   if (hintsAreActive) {
@@ -132,6 +143,9 @@ function GetNeigbors(tileX, tileY) {
   return returnValues;
 }
 function ToggleHints() {
+  if (gameState != "play") {
+    return;
+  }
   if (hintsAreActive) {
     HideHints();
   } else {
@@ -170,16 +184,24 @@ function CheckWinCon() {
       }
     }
   }
+  let win = false;
   if (whiteCount == 0) {
     blackWin = true;
-    winTimeStamp = Date.now();
+    win = true;
     document.getElementById("blackWin").innerText = "black.";
-    setInterval(FadeOut, 16);
   } else if (blackCount == 0) {
     blackWin = false;
-    winTimeStamp = Date.now();
+    win = true;
     document.getElementById("blackWin").innerText = "white.";
-    setInterval(FadeOut, 16);
+  }
+  if (win) {
+    winTimeStamp = Date.now();
+    gameState = "fadeOut";
+    document.getElementById("blackWin").hidden = false;
+    document.getElementById("blackWin").style.opacity = 1.0;
+    document.getElementById("blackWin").style.color = "rgb(128, 128, 128)";
+    document.getElementById("dot").hidden = true;
+    FadeOutID = setInterval(FadeOut, 16);
   }
 }
 function FadeOut() {
@@ -196,22 +218,83 @@ function FadeOut() {
     bgBrightness,
     bgBrightness
   );
-  document.getElementById("blackWin").style.color = rgb(
-    255 - bgBrightness,
-    255 - bgBrightness,
-    255 - bgBrightness
-  );
-  if (fadeFactor >= 1) {
-    clearInterval(FadeOut);
+  if (fadeFactor < 1) {
+    document.getElementById("blackWin").style.color = rgb(
+      255 - bgBrightness,
+      255 - bgBrightness,
+      255 - bgBrightness
+    );
+  } else if (fadeFactor >= 1 && fadeFactor < 2) {
+    document.getElementById("blackWin").style.color = rgb(
+      255 - bgBrightness,
+      255 - bgBrightness,
+      255 - bgBrightness
+    );
     document.getElementById("mainDiv").hidden = true;
+    document.getElementById("dot").style.color = rgb(
+      255 - bgBrightness,
+      255 - bgBrightness,
+      255 - bgBrightness
+    );
+    document.getElementById("dot").hidden = false;
+  } else if (fadeFactor >= 2 && fadeFactor < 3) {
+    fadeFactor -= 2;
+    document.getElementById("blackWin").style.opacity = 1.0 - fadeFactor;
+  } else {
+    document.getElementById("blackWin").style.opacity = 0;
+    gameState = "faded";
+    clearInterval(FadeOutID);
+  }
+}
+function ContinueGame() {
+  if (gameState != "faded") {
+    return;
+  }
+  gameState = "play";
+  ScrableBoard();
+  gameState = "fadeIn";
+  document.getElementById("mainDiv").hidden = false;
+  winTimeStamp = Date.now();
+  FadeInID = setInterval(FadeIn, 16);
+}
+function FadeIn() {
+  let fadeFactor = (Date.now() - winTimeStamp) / winFadeOutTime;
+  let bgBrightness;
+  if (blackWin) {
+    bgBrightness = 0 + 128 * fadeFactor;
+  } else {
+    bgBrightness = 255 - 128 * fadeFactor;
+  }
+  if (fadeFactor < 1.0) {
+    document.getElementById("mainDiv").style.opacity = fadeFactor;
+    document.getElementById("dot").style.color = rgb(
+      255 - bgBrightness,
+      255 - bgBrightness,
+      255 - bgBrightness
+    );
+    document.body.style.backgroundColor = rgb(
+      bgBrightness,
+      bgBrightness,
+      bgBrightness
+    );
+  } else {
+    document.getElementById("blackWin").hidden = true;
+    document.getElementById("dot").hidden = true;
+    gameState = "play";
+    document.getElementById("blackWin").style.color = "rgb(128, 128, 128);";
+    clearInterval(FadeInID);
   }
 }
 function ResizeBoard() {
-  const newTextSize = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+  const newTextSize = Math.min(window.innerWidth, window.innerHeight) * 0.25;
   //const newTextSize = window.innerWidth * 0.35;
+  let newTop = (window.innerHeight - newTextSize) / 2 + "px";
   document.getElementById("blackWin").style.fontSize = newTextSize + "px";
-  document.getElementById("blackWin").style.top =
-    (window.innerHeight - newTextSize) / 2 + "px";
+  document.getElementById("blackWin").style.top = newTop;
+
+  document.getElementById("dot").style.fontSize = newTextSize + "px";
+  document.getElementById("dot").style.top = newTop;
+
   const tileSize =
     (Math.min(window.innerWidth, window.innerHeight - 50) * 0.45) / mapSize;
   for (let i = 0; i < mapSize; i++) {
