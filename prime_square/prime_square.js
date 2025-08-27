@@ -44,6 +44,14 @@ function GenerateMap() {
 }
 function PaintCells() {
   let pos = [Math.floor(mapSize / 2), Math.floor(mapSize / 2)];
+  let directions = [
+    [0, 1],
+    [1, 0],
+    [-1, 0],
+    [0, -1],
+  ];
+  let curentDir = 0;
+  let sideLength = 1;
 }
 GenerateMap();
 CalcPrimest();
