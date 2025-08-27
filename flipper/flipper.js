@@ -4,7 +4,7 @@ let lastMousedOver = [];
 const map = [];
 const hints = [];
 let hintsAreActive = false;
-let winFadeOutTime = 1200.0;
+const winFadeOutTime = 1200.0;
 let winTimeStamp = 0;
 let blackWin = true;
 const glowForce = 30;
@@ -16,7 +16,6 @@ let FadeInID;
 
 function GenerateMap() {
   let htmlOut = "";
-  htmlOut += "<div id='mainDiv'>";
   htmlOut += "<table onmouseout='ClearMouseOver()'>";
   for (let i = 0; i < mapSize; i++) {
     htmlOut += "<tr>";
@@ -38,15 +37,7 @@ function GenerateMap() {
     htmlOut += "</tr>";
   }
   htmlOut += "</table>";
-  htmlOut += '<button onclick="ToggleHints()">Hints</button> ';
-  htmlOut += '<button onclick="ScrableBoard()">Scramble</button>';
-  htmlOut += "</div>";
-
-  htmlOut += '<div id="blackWin"></div>';
-  htmlOut +=
-    '<div id="dot">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="ContinueGame()">.</a></div>';
-
-  htmlOut += document.write(htmlOut);
+  document.getElementById("board").innerHTML = htmlOut;
 
   //Populate map[][] and hints[][] with data
   for (let i = 0; i < mapSize; i++) {
@@ -60,7 +51,7 @@ function GenerateMap() {
     hints.push(innerHints);
   }
 }
-function ScrableBoard() {
+function ScrambleBoard() {
   if (gameState != "play") {
     return;
   }
@@ -251,7 +242,7 @@ function ContinueGame() {
     return;
   }
   gameState = "play";
-  ScrableBoard();
+  ScrambleBoard();
   gameState = "fadeIn";
   document.getElementById("mainDiv").hidden = false;
   winTimeStamp = Date.now();
@@ -306,9 +297,8 @@ function ResizeBoard() {
 function rgb(r, g, b) {
   return "rgb(" + r + "," + g + "," + b + ")";
 }
-//clearInterval(SoftGlowMouseOver);
 setInterval(SoftGlowMouseOver, 16);
 GenerateMap();
-ScrableBoard();
+ScrambleBoard();
 ResizeBoard();
 window.onresize = ResizeBoard;
