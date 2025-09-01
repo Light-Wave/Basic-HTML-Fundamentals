@@ -1,5 +1,5 @@
 "use strict";
-const mapSize = 3;
+let mapSize = 3;
 let lastMousedOver = [];
 const map = [];
 const hints = [];
@@ -297,8 +297,11 @@ function ResizeBoard() {
 function rgb(r, g, b) {
   return "rgb(" + r + "," + g + "," + b + ")";
 }
-setInterval(SoftGlowMouseOver, 16);
-GenerateMap();
-ScrambleBoard();
-ResizeBoard();
-window.onresize = ResizeBoard;
+function Start(givenMapSize) {
+  mapSize = givenMapSize;
+  setInterval(SoftGlowMouseOver, 16);
+  GenerateMap();
+  ScrambleBoard();
+  ResizeBoard();
+  window.onresize = ResizeBoard;
+}

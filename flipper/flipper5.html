@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turn it Black</title>
+    <link rel="stylesheet" href="flipper.css" />
+  </head>
+  <body>
+    <div id="mainDiv">
+      <div id="board">Error</div>
+      <div id="buttons">
+        <button onclick="ToggleHints()">Hints</button>
+        <button onclick="ScrambleBoard()">Scramble</button>
+        <button onclick="location.href='index.html';">Home</button>
+      </div>
+    </div>
+    <div id="blackWin"></div>
+    <div id="dot">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="ContinueGame()">.</a>
+    </div>
+  </body>
+  <script src="flipper.js"></script>
+  <script>
+    Start(5);
+  </script>
+</html>
