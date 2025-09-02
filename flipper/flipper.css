@@ -2,6 +2,7 @@ th,
 td {
   border: 5px dashed rgba(0, 0, 0, 0);
   padding: 30px;
+  cursor: pointer;
 }
 table {
   margin-left: auto;
@@ -27,6 +28,9 @@ body {
   z-index: -1;
   font-family: "Lucida Console", "Courier New", monospace;
 }
+#blackWin {
+  z-index: -2;
+}
 #mainDiv {
   text-align: center;
 }
@@ -40,6 +44,7 @@ button {
   display: inline-block;
   font-size: 16px;
   border-radius: 12px;
+  cursor: pointer;
 }
 button:hover {
   background-color: rgb(200, 200, 200);
