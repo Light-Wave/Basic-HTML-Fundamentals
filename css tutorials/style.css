@@ -7,9 +7,7 @@
 body {
   margin: auto;
   max-width: 1024px;
-  background-color: rgba(255, 255, 255, 0.568);
-  background-blend-mode: lighten;
-  background-image: url("../images/passion.webp");
+  background-color: black;
 }
 header {
   background-color: rgb(156, 89, 209);
@@ -17,11 +15,11 @@ header {
 }
 #mainBody {
   height: auto;
-  background-color: tomato;
   display: flex;
+  border: 1px solid rgb(252, 244, 52);
 }
 footer {
-  background-color: blueviolet;
+  background-color: rgb(156, 89, 209);
   padding: 15px;
   clear: both;
 }
@@ -33,7 +31,8 @@ main {
 aside {
   float: right;
   width: 200 px;
-  background-color: darkseagreen;
+  background-color: black;
+  color: rgb(252, 244, 52);
 }
 main,
 aside {
@@ -86,8 +85,8 @@ nav ul li a:hover {
   background-color: gray;
 }
 #firstnava {
-  border-radius: 20px 5px 5px 20px;
+  border-radius: 30px 5px 5px 30px;
 }
 #lastnava {
-  border-radius: 5px 20px 20px 5px;
+  border-radius: 5px 30px 30px 5px;
 }
