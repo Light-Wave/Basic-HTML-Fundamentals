@@ -45,7 +45,7 @@ function GenerateMap() {
     map.push(row);
   }
 }
-function PaintCells() {
+async function PaintCells() {
   let pos = [Math.floor(mapSize / 2), Math.floor(mapSize / 2)];
   let directions = [
     [1, 0],
@@ -77,7 +77,7 @@ function PaintCells() {
       remainingSteps = sideLength;
     }
     i++;
-    //await new Promise((r) => setTimeout(r, 16)); // Useful for debugging
+    //await new Promise((r) => setTimeout(r, 1)); // Useful for debugging
   }
 }
 GenerateMap();
