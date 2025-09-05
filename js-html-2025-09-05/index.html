@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box {
+        width: 100px;
+        height: 100px;
+        background-color: violet;
+      }
+      button {
+        margin: 10px;
+      }
+      #box1 {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box" id="box1"></div>
+    <!-- <button
+      onclick="hideBox()"
+      onmouseenter="changeBg()"
+      onmouseout="resetBG()"
+    >
+      Hide
+    </button> -->
+    <button id="hideBtn">Hide</button>
+    <br />
+    <script>
+      function hideBox() {
+        document.getElementById("box1").style.display = "none";
+      }
+      function changeBg(bgcolor) {
+        document.getElementById("box1").style.backgroundColor = bgcolor;
+      }
+      function resetBG() {
+        document.getElementById("box1").style.backgroundColor = "violet";
+      }
+      document.getElementById("hideBtn").addEventListener("click", hideBox);
+      document
+        .getElementById("hideBtn")
+        .addEventListener("mouseenter", () => changeBg("yellow"));
+      document.getElementById("hideBtn").addEventListener("mouseout", resetBG);
+    </script>
+    <label for="number">Number</label> <input type="number" id = "number/>
+    <br />
+    <input type="button" value="Even / Odd" onclick="evenOrOdd()" />
+    <h2 id="evenOrOdd">&nbsp;</h2>
+
+    <script>
+      evenOrOdd = () => {
+        let number = parseInt(document.getElementById("number").value);
+        if (isNaN(number)) {
+          document.getElementById("evenOrOdd").innerHTML =
+            "Please enter a valid number";
+          return;
+        }
+        if (number % 2 == 0) {
+          document.getElementById("evenOrOdd").innerHTML = "The number is even";
+        } else {
+          document.getElementById("evenOrOdd").innerHTML = "The number is odd";
+        }
+      };
+    </script>
+
+    <input type="number" id="num1" /> <label for="num1">Number</label><br />
+    <input type="number" id="num2" /> <label for="num2">Number</label><br />
+    <input type="button" id="btn" value="Add numbers" onclick="add()" /> <br />
+    <h2 id="result">&nbsp;</h2>
+
+    <p id="p1">Some old text</p>
+    <input
+      value="Change Text"
+      onclick="document.getElementById('p1').innerHTML = 'This is a new text'"
+      type="button"
+    />
+  </body>
+  <script>
+    function add() {
+      let num1 = parseFloat(document.getElementById("num1").value);
+      let num2 = parseFloat(document.getElementById("num2").value);
+      sum = num1 + num2;
+      document.getElementById("result").innerHTML = "The sum is: " + sum;
+    }
+  </script>
+</html>

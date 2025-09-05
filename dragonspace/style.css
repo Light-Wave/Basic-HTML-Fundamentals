@@ -5,3 +5,16 @@
 .machine {
   border: 2px solid gray;
 }
+.crewField {
+  background-color: lightgray;
+  min-width: 50px;
+  display: inline-block;
+}
+.imgHolder {
+  width: 50px;
+  color: violet;
+}
+body {
+  background-color: lightblue;
+  color: darkblue;
+}

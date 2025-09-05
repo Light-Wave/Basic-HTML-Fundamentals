@@ -9,6 +9,9 @@ const machines = [
   { id: 2, name: "Shield", crew: null },
 ];
 
+let img = new Image();
+img.src = "https://www.w3schools.com/html/img_chania.jpg";
+
 // Render crew members
 function renderCrew() {
   const crewDiv = document.getElementById("crew");
@@ -19,16 +22,15 @@ function renderCrew() {
     div.draggable = true;
     div.className = "crew-member";
     div.dataset.id = member.id;
-    div.addEventListener("dragstart", (e) => {
-      e.dataTransfer.setData("text/plain", member.id);
-    });
+    div.addEventListener("dragstart", dragstartHandler);
     crewDiv.appendChild(div);
   });
 }
 
 function dragstartHandler(ev) {
   ev.dataTransfer.setDragImage(img, 10, 10);
-  ev.dataTransfer.setData("text/plain", ev.target.id);
+  console.log(ev.target.id);
+  ev.dataTransfer.setData("text/plain", ev.target.dataset.id);
 }
 
 // Render machines
@@ -55,7 +57,7 @@ function renderMachines() {
 
 // Initial render
 window.onload = function () {
-  document.body.innerHTML = `
+  /*document.body.innerHTML = `
         <h2>Crew Members</h2>
         <div id="crew" style="display:flex; gap:10px; margin-bottom:20px;"></div>
         <h2>Machines</h2>
@@ -66,5 +68,5 @@ window.onload = function () {
         </style>
     `;
   renderCrew();
-  renderMachines();
+  renderMachines();*/
 };

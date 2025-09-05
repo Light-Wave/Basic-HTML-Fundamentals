@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Change SVG Fill</title>
+  </head>
+  <body style="color: blue">
+    <div id="svgContainer" style="width: 90px" draggable="true"></div>
+
+    <script>
+      function loadSVG(svgUrl, color) {
+        console.log("Loading SVG:", svgUrl);
+        fetch(svgUrl)
+          .then((r) => r.text())
+          .then((text) => {
+            document.getElementById("svgContainer").innerHTML = text.replace(
+              "#fff",
+              color
+            );
+          });
+      }
+      loadSVG("../icons/ffffff/transparent/1x1/delapouite/africa.svg", "green");
+    </script>
+  </body>
+</html>
