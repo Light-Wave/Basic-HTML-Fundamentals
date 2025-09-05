@@ -47,6 +47,7 @@ h1 {
   border: 2px solid var(--dark3);
   width: 80%;
   float: left;
+  padding: 4px;
 }
 footer {
   background-color: var(--dark2);
@@ -54,17 +55,14 @@ footer {
   padding: 15px;
   clear: both;
 }
-main {
-  float: left;
-  width: 80%;
-}
 aside {
   float: right;
   width: 20%;
   background-color: var(--dark2);
   border: 2px solid var(--dark3);
   color: var(--light3);
-  height: 860px;
+  height: 948px; /*Uggly hack because we're not allowed to add new divs*/
+  padding: 4px;
 }
 #rowOne {
   background-color: var(--dark3);
@@ -80,7 +78,8 @@ article {
   width: 50%;
   float: left;
   border: 2px solid var(--dark1);
-  height: 700px;
+  height: 780px; /*Uggly hack because we're not allowed to add new divs*/
+  padding: 4px;
 }
 #img1 {
   display: block;
