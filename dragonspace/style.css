@@ -5,16 +5,27 @@
 .machine {
   border: 2px solid gray;
 }
-.crewField {
+.crew-field {
   background-color: lightgray;
   min-width: 50px;
   display: inline-block;
 }
 .imgHolder {
+  transform: translate(0, 0); /*Removes parent background on drag image*/
+  border-radius: 50px;
+  padding: 5px;
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0.356);
+}
+.innerImgHolder {
+  display: inline-block;
   width: 50px;
-  color: violet;
 }
 body {
   background-color: lightblue;
   color: darkblue;
+}
+svg {
+  display: inline;
+  width: 50px;
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bootstrap Layout</title>
+    <link href="bootstrap.css" rel="stylesheet" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <header class="my-3">
+      <h1>CSS Layout</h1>
+      <nav>
+        <ul>
+          <li>
+            <a
+              class="btn btn-success"
+              href="../index.html"
+              target="_top"
+              id="firstnava"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a href="../about_me.html" target="_top">About Me</a>
+          </li>
+          <li><a href="../login.html" target="_top">Login</a></li>
+          <li><a href="layout.html" target="_top" id="lastnava">Layout</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4 col-sm-12 card">
+          <h2 style="text-align: center">Subheader</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
+            voluptatem rem quia. Natus nesciunt corrupti excepturi asperiores
+            quis nihil laboriosam, sequi dolorum ex, labore rerum quod
+            repellendus dolores quae velit.
+          </p>
+        </div>
+        <div class="col">
+          <h2 style="text-align: center">Subheader</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
+            voluptatem rem quia. Natus nesciunt corrupti excepturi asperiores
+            quis nihil laboriosam, sequi dolorum ex, labore rerum quod
+            repellendus dolores quae velit.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 bg-danger">
+          <form>
+            <div class="form-control">
+              <label for="nameInput" class="col-md-3">Name:</label>
+              <input type="text" id="nameInput" class="col-md-4" />
+            </div>
+            <div class="form-control">
+              <label for="emailInput" class="form-label" class="col-md-3"
+                >Email:</label
+              >
+              <input type="email" id="emailInput" class="form-control" />
+            </div>
+            <div class="form-control">
+              <label for="messageInput" class="form-label" class="col-md-3"
+                >Message:</label
+              >
+              <textarea id="messageInput" class="form-control"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="col bg-info"></div>
+        <div class="col bg-warning">
+          <h2 style="text-align: center">Subheader</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
+            voluptatem rem quia. Natus nesciunt corrupti excepturi asperiores
+            quis nihil laboriosam, sequi dolorum ex, labore rerum quod
+            repellendus dolores quae velit.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div id="mainBody">
+      <main>
+        <div>
+          <button>Submit</button>
+          <button class="btn btn-success">Submit</button>
+          <button class="btn btn-danger">Cancel</button>
+          <button class="btn btn-warning">Edit</button>
+          <button class="btn btn-info">Display</button>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
