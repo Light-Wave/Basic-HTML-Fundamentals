@@ -1,128 +1,151 @@
 const races = [
   {
     name: "Human",
-    img: "delapouite/person.svg",
+    img: "",
+    imgSrc: "delapouite/person.svg",
     color: "beige",
   },
   {
     name: "Dwarf",
-    img: "kier-heyl/dwarf-helmet.svg",
+    img: "",
+    imgSrc: "kier-heyl/dwarf-helmet.svg",
     color: "gold",
   },
   {
     name: "Elf",
-    img: "kier-heyl/elf-helmet.svg",
+    img: "",
+    imgSrc: "kier-heyl/elf-helmet.svg",
     color: "green",
   },
 ];
 
 const machines = [
   { id: 0, name: "Idle", crew: [6, 0, 0] },
-  { id: 1, name: "Iron Mine", crew: [0, 3, 0] },
+  { id: 1, name: "Iron Mine", crew: [2, 3, 3] },
   { id: 2, name: "Copper Mine", crew: [0, 3, 0] },
   { id: 3, name: "Farming", crew: [0, 0, 3] },
 ];
 let mousedOverCrew = -1;
+let mousedOverMachine = -1;
+let dragData = null;
 
-// Render crew members
-function renderCrew() {
-  const crewDiv = document.getElementById("crew");
-  crewDiv.innerHTML = "";
-  crewMembers.forEach((member) => {
-    const div = document.createElement("div");
-    div.textContent = member.name;
-    div.draggable = true;
-    div.className = "crew-member";
-    div.dataset.id = member.id;
-    div.addEventListener("dragstart", dragstartHandler);
-    crewDiv.appendChild(div);
-  });
-}
-
-function dragstartHandler(ev) {
+function dragCrewStartHandler(ev) {
   ev.dataTransfer.setData("text/plain", ev.target.dataset.id);
-  console.log("Dragging crew ID:", mousedOverCrew);
+  const dragedCrews =
+    machines[mousedOverCrew.dataset.machine].crew[mousedOverCrew.dataset.race] -
+    mousedOverCrew.dataset.index;
+  console.log(dragedCrews);
+  const dragImg = generateCrewBlock(mousedOverCrew.dataset.race, dragedCrews);
+  machines[mousedOverCrew.dataset.machine].crew[mousedOverCrew.dataset.race] -=
+    dragedCrews;
+  dragImg.style.position = "absolute";
+  dragImg.style.top = "-1000px";
+  dragImg.style.left = "-1000px";
+  document.body.appendChild(dragImg);
+  ev.dataTransfer.setDragImage(dragImg, 0, 25);
+  dragData = {
+    originMachine: mousedOverCrew.dataset.machine,
+    race: mousedOverCrew.dataset.race,
+    count: dragedCrews,
+  };
+  setTimeout(() => {
+    document.body.removeChild(dragImg);
+    renderMachines();
+  }, 1);
 }
+
+function dragCrewEndHandler(ev) {
+  if (mousedOverMachine != -1 && dragData != null) {
+    machines[mousedOverMachine.dataset.id].crew[dragData.race] +=
+      dragData.count;
+  } else {
+    machines[dragData.originMachine].crew[dragData.race] += dragData.count;
+  }
+  renderMachines();
+  dragData = null;
+}
+
 function mouseOverCrew(ev) {
-  mousedOverCrew = ev.target.dataset.index;
-  console.log("Mouse over crew index:", mousedOverCrew);
+  mousedOverCrew = ev.target;
+}
+function mouseOverMachine(ev) {
+  mousedOverMachine = ev.currentTarget;
+}
+
+function renderAllRaces(machine) {
+  const crewField = machine.crewField;
+  crewField.innerHTML = "&nbsp;";
+  if (machine.crew == null || machine.crew.length != races.length) {
+    machine.crew = [0, 0, 0];
+  }
+  for (let i = 0; i < races.length; i++) {
+    if (machine.crew[i] == 0) {
+      continue;
+    }
+    const crewImg = generateCrewBlock(i, machine.crew[i], machine.id);
+    crewField.appendChild(crewImg);
+  }
 }
 
 // Render machines
 function renderMachines() {
+  console.log("Rendering machines...");
   const machinesDiv = document.getElementById("machines");
   machinesDiv.innerHTML = "";
   machines.forEach((machine) => {
     const div = document.createElement("div");
+    machine.div = div;
     div.className = "machine";
     div.dataset.id = machine.id;
     const header = document.createElement("h4");
     header.textContent = machine.name;
     div.appendChild(header);
     const crewField = document.createElement("div");
+    machine.crewField = crewField;
     crewField.className = "crew-field";
     crewField.innerHTML = "&nbsp;";
     div.appendChild(crewField);
-    if (machine.crew == null || machine.crew.length != races.length) {
-      machine.crew = [0, 0, 0];
-    }
-    for (let i = 0; i < races.length; i++) {
-      if (machine.crew[i] == 0) {
-        continue;
-      }
-      const crewImg = generateCrewImage(
-        races[i].img,
-        races[i].color,
-        machine.crew[i]
-      );
-      crewField.appendChild(crewImg);
-    }
-    /*
-    div.addEventListener("dragover", (e) => e.preventDefault());
-    div.addEventListener("drop", (e) => {
-      e.preventDefault();
-      const crewId = parseInt(e.dataTransfer.getData("text/plain"));
-      const crew = crewMembers.find((c) => c.id === crewId);
-      machine.crew = crew;
-      renderMachines();
-    });*/
+    renderAllRaces(machine);
     machinesDiv.appendChild(div);
+    div.addEventListener("dragover", mouseOverMachine);
   });
 }
-function generateCrewImage(svgUrl, color, count = 1) {
+function generateCrewBlock(race, count = 1, machine = -1) {
   const svgContainer = document.createElement("div");
   svgContainer.className = "imgHolder";
-  fetch("../icons/ffffff/transparent/1x1/" + svgUrl)
-    .then((r) => r.text())
-    .then((text) => {
-      const svgText = text.replace("#fff", color);
-      for (let i = 0; i < count; i++) {
-        const innerSvgContainer = document.createElement("div");
-        innerSvgContainer.className = "innerImgHolder";
-        innerSvgContainer.innerHTML = svgText;
-        innerSvgContainer.dataset.index = i;
-        innerSvgContainer.addEventListener("mouseenter", mouseOverCrew);
-        svgContainer.appendChild(innerSvgContainer);
-        console.log("Added crew with id: " + innerSvgContainer.dataset.index);
-      }
-    });
+  const svgText = races[race].img;
+  for (let i = 0; i < count; i++) {
+    const innerSvgContainer = document.createElement("div");
+    innerSvgContainer.className = "innerImgHolder";
+    innerSvgContainer.innerHTML = svgText;
+    innerSvgContainer.dataset.index = i;
+    innerSvgContainer.dataset.race = race;
+    innerSvgContainer.dataset.machine = machine;
+    innerSvgContainer.addEventListener("mouseenter", mouseOverCrew);
+    svgContainer.appendChild(innerSvgContainer);
+  }
   svgContainer.draggable = true;
-  svgContainer.addEventListener("dragstart", dragstartHandler);
+  svgContainer.addEventListener("dragstart", dragCrewStartHandler);
+  svgContainer.addEventListener("dragend", dragCrewEndHandler);
   return svgContainer;
+}
+
+function preloadImages() {
+  console.log("Preloading images...");
+  for (let i = 0; i < races.length; i++) {
+    fetch("../icons/ffffff/transparent/1x1/" + races[i].imgSrc)
+      .then((r) => r.text())
+      .then((text) => {
+        races[i].img = text.replace("#fff", races[i].color);
+        console.log(`Preloaded image for ${races[i].name}`);
+
+        renderMachines();
+      });
+  }
+  console.log("All images preloaded.");
 }
 
 // Initial render
 window.onload = function () {
-  /*document.body.innerHTML = `
-        <h2>Crew Members</h2>
-        <div id="crew" style="display:flex; gap:10px; margin-bottom:20px;"></div>
-        <h2>Machines</h2>
-        <div id="machines" style="display:flex; gap:10px;"></div>
-        <style>
-            .crew-member { padding:8px; background:#eef; border:1px solid #99f; border-radius:4px; cursor:grab; }
-            .machine { padding:16px; background:#efe; border:1px solid #9f9; border-radius:4px; min-width:120px; min-height:40px; }
-        </style>
-    `;
-  renderCrew();*/
-  renderMachines();
+  preloadImages();
 };

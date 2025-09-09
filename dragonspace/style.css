@@ -7,8 +7,9 @@
 }
 .crew-field {
   background-color: lightgray;
-  min-width: 50px;
-  display: inline-block;
+  height: 66px;
+  display: block;
+  padding-top: 4px;
 }
 .imgHolder {
   transform: translate(0, 0); /*Removes parent background on drag image*/
@@ -19,7 +20,7 @@
 }
 .innerImgHolder {
   display: inline-block;
-  width: 50px;
+  width: 20px;
 }
 body {
   background-color: lightblue;
