@@ -4,6 +4,8 @@ const races = [
     img: "",
     imgSrc: "delapouite/person.svg",
     color: "beige",
+    consumption: [{ wheat: 1 }],
+    production: [{ money: 1 }],
   },
   {
     name: "Dwarf",
@@ -12,6 +14,8 @@ const races = [
     color: "gold",
     metalworkingBonus: 1,
     farmingBonus: -0.5,
+    consumption: [{ wheat: 1 }],
+    production: [{ money: 1 }],
   },
   {
     name: "Elf",
@@ -20,6 +24,8 @@ const races = [
     color: "green",
     metalworkingBonus: -0.5,
     farmingBonus: 1,
+    consumption: [{ wheat: 1 }],
+    production: [{ money: 1 }],
   },
 ];
 const resources = [
@@ -44,6 +50,20 @@ const resources = [
     imgSrc: "faithtoken/ore.svg",
     color: "rgb(31, 128, 129)",
   },
+  {
+    id: "ore_tin",
+    name: "Tin Ore",
+    img: "",
+    imgSrc: "faithtoken/ore.svg",
+    color: "rgb(179, 179, 179)",
+  },
+  {
+    id: "money",
+    name: "Gold Coins",
+    img: "",
+    imgSrc: "lorc/crown-coin.svg",
+    color: "gold",
+  },
 ];
 
 const machines = [
@@ -52,22 +72,25 @@ const machines = [
     name: "Iron Mine",
     crew: [2, 3, 3],
     bonusesUsed: ["metalworkingBonus"],
+    produce: [{ ore_iron: 1 }],
   },
   {
     name: "Copper Mine",
     crew: [0, 3, 0],
     bonusesUsed: ["metalworkingBonus"],
+    produce: [{ ore_copper: 1 }],
   },
   {
     name: "Farming",
     crew: [0, 0, 3],
     bonusesUsed: ["farmingBonus"],
-    produce: [{ wheat: 2 }, { ore_iron: 1 }],
+    produce: [{ wheat: 1 }],
   },
   {
     name: "Tin Flowers",
     crew: [0, 0, 1],
     bonusesUsed: ["farmingBonus", "metalworkingBonus"],
+    produce: [{ wheat: 1 }, { ore_tin: 1 }],
   },
 ];
 let mousedOverCrew = -1;
@@ -79,7 +102,6 @@ function dragCrewStartHandler(ev) {
   const dragedCrews =
     machines[mousedOverCrew.dataset.machine].crew[mousedOverCrew.dataset.race] -
     mousedOverCrew.dataset.index;
-  console.log(dragedCrews);
   const dragImg = generateCrewBlock(mousedOverCrew.dataset.race, dragedCrews);
   machines[mousedOverCrew.dataset.machine].crew[mousedOverCrew.dataset.race] -=
     dragedCrews;
@@ -106,8 +128,8 @@ function dragCrewEndHandler(ev) {
   } else {
     machines[dragData.originMachine].crew[dragData.race] += dragData.count;
   }
-  renderMachines();
   dragData = null;
+  renderMachines();
 }
 
 function mouseOverCrew(ev) {
@@ -133,7 +155,6 @@ function renderAllRaces(machine) {
 
 // Render machines
 function renderMachines() {
-  console.log("Rendering machines...");
   const machinesDiv = document.getElementById("machines");
   machinesDiv.innerHTML = "";
   machines.forEach((machine) => {
@@ -172,16 +193,27 @@ function renderMachines() {
     let output = "";
     if (machine.produce != null) {
       machine.produce.forEach((element) => {
+        if (productivity <= 0) {
+          return;
+        }
         output +=
           (output.length > 0 ? ", " : "") +
           Object.values(element)[0] * productivity +
           " " +
           resources.find((r) => r.id == Object.keys(element)[0]).name;
+        income.appendChild(
+          generateResourceBlock(
+            Object.keys(element)[0],
+            Math.floor(Object.values(element)[0] * productivity)
+          )
+        );
       });
     }
     income.className = "income";
-    income.textContent = "Income: " + output;
+    //income.textContent = "Income: " + output;
     wrapper.appendChild(income);
+    income.innerHTML += "Income: " + output;
+    machine.incomeDiv = income;
 
     const crewField = document.createElement("div");
     machine.crewField = crewField;
@@ -192,7 +224,54 @@ function renderMachines() {
 
     div.addEventListener("dragover", mouseOverMachine);
   });
+  renderCore();
 }
+
+function renderCore() {
+  machines[0].incomeDiv.innerHTML = "";
+  const population = [];
+  for (let i = 0; i < machines.length; i++) {
+    for (let j = 0; j < machines[i].crew.length; j++) {
+      population[j] = (population[j] || 0) + machines[i].crew[j];
+    }
+  }
+  if (dragData != null) {
+    population[dragData.race] += dragData.count;
+  }
+  // Calculate income from population
+  const popIncome = new Map();
+  for (let i = 0; i < population.length; i++) {
+    if (races[i].production != null) {
+      races[i].production.forEach((element) => {
+        const resource = getResourceById(Object.keys(element)[0]);
+        popIncome.set(
+          resource.id,
+          (popIncome.get(resource.id) || 0) +
+            Object.values(element)[0] * population[i]
+        );
+      });
+    }
+  }
+  console.log(popIncome);
+
+  let output = "";
+  popIncome.forEach((value, key) => {
+    if (value == null || value <= 0) {
+      return;
+    }
+    console.log(key, value);
+    output +=
+      (output.length > 0 ? ", " : "") +
+      value +
+      " " +
+      getObjectById(resources, key).name;
+    machines[0].incomeDiv.appendChild(
+      generateResourceBlock(key, Math.floor(value))
+    );
+  });
+  machines[0].incomeDiv.innerHTML += "Income: " + output;
+}
+
 function generateCrewBlock(race, count = 1, machine = -1) {
   const svgContainer = document.createElement("div");
   svgContainer.className = "imgHolder";
@@ -212,16 +291,44 @@ function generateCrewBlock(race, count = 1, machine = -1) {
   svgContainer.addEventListener("dragend", dragCrewEndHandler);
   return svgContainer;
 }
+function generateResourceBlock(resource, count = 1) {
+  const svgContainer = document.createElement("div");
+  svgContainer.className = "imgHolder";
+  const svgText = getResourceById(resource).img;
+  for (let i = 0; i < Math.floor(count / 10); i++) {
+    const innerSvgContainer = document.createElement("div");
+    innerSvgContainer.className = "innerImgHolder";
+    innerSvgContainer.innerHTML = svgText;
+    svgContainer.appendChild(innerSvgContainer);
+  }
+  if (count % 10 != 0) {
+    const smallSvgContainer = document.createElement("div");
+    smallSvgContainer.className = "innerImgHolder";
+    svgContainer.appendChild(smallSvgContainer);
+    for (let i = 0; i < count % 10; i++) {
+      const innerSvgContainer = document.createElement("div");
+      innerSvgContainer.className = "smallImgHolder";
+      innerSvgContainer.innerHTML = svgText;
+      smallSvgContainer.appendChild(innerSvgContainer);
+      if (i == 2 || i == 5) {
+        smallSvgContainer.appendChild(document.createElement("br"));
+      }
+    }
+  }
+  return svgContainer;
+}
+
+function getResourceById(id) {
+  return resources.find((r) => r.id == id);
+}
 
 function preloadImages(objectArray) {
-  console.log("Preloading images...");
   startAsync(objectArray.length);
   for (let i = 0; i < objectArray.length; i++) {
     fetch("../icons/ffffff/transparent/1x1/" + objectArray[i].imgSrc)
       .then((r) => r.text())
       .then((text) => {
         objectArray[i].img = text.replace("#fff", objectArray[i].color);
-        console.log(`Preloaded image for ${objectArray[i].name}`);
 
         endAsync();
       });
@@ -252,4 +359,7 @@ function endAsync() {
   if (asyncsStarted <= 0) {
     renderMachines();
   }
+}
+function getObjectById(objectArray, id) {
+  return objectArray.find((r) => r.id == id);
 }

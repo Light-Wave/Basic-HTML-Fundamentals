@@ -34,9 +34,37 @@ const max_value = 100;
 // Task 1
 const randArray = [];
 for (let i = 0; i < array_length; i++) {
-  randArray[i] = Math.floor(Math.random * max_value);
+  randArray[i] = Math.floor(Math.random() * max_value);
 }
-// /Task 1
 
 // Task 2
-console.log(randArray);
+console.log(randArray.toString());
+
+// Task 3
+randArray.sort((a, b) => a - b);
+
+// Task 4
+console.log(randArray.toString());
+
+// Task 5
+randArray.sort((a, b) => b - a);
+
+// Task 6
+console.log(randArray.toString());
+
+// Task 7
+const evenOddArray = [array_length];
+let start = 0;
+let end = array_length - 1;
+for (let i = 0; i < array_length; i++) {
+  if (randArray[i] % 2 == 0) {
+    evenOddArray[start] = randArray[i];
+    start++;
+  } else {
+    evenOddArray[end] = randArray[i];
+    end--;
+  }
+}
+
+// Task 8
+console.log(evenOddArray.toString());

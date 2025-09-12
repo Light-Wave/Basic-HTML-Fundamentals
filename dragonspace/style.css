@@ -33,14 +33,23 @@
 }
 .imgHolder {
   transform: translate(0, 0); /*Removes parent background on drag image*/
-  border-radius: 50px;
+  border-radius: 25px;
   padding: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
   display: inline-block;
   background-color: rgba(0, 0, 0, 0.356);
 }
 .innerImgHolder {
   display: inline-block;
   width: 50px;
+  height: 50px;
+  vertical-align: top;
+}
+.smallImgHolder {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
 }
 body {
   background-color: lightblue;
@@ -48,5 +57,6 @@ body {
 }
 svg {
   display: inline;
-  width: 50px;
+  width: 100%;
+  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.7));
 }
