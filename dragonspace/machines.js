@@ -1,96 +1,186 @@
 const races = [
   {
     name: "Human",
-    img: "",
     imgSrc: "delapouite/person.svg",
     color: "beige",
     consumption: [{ wheat: 1 }],
     production: [{ money: 1 }],
   },
   {
-    name: "Dwarf",
-    img: "",
-    imgSrc: "kier-heyl/dwarf-helmet.svg",
-    color: "gold",
-    metalworkingBonus: 1,
-    farmingBonus: -0.5,
-    consumption: [{ wheat: 1 }],
-    production: [{ money: 1 }],
+    name: "Scientist",
+    imgSrc: "delapouite/lab-coat.svg",
+    color: "lightblue",
+    scienceBonus: 1,
   },
   {
-    name: "Elf",
-    img: "",
-    imgSrc: "kier-heyl/elf-helmet.svg",
+    name: "Engineer",
+    imgSrc: "delapouite/person.svg",
+    color: "orange",
+    engineeringBonus: 1,
+  },
+  {
+    name: "Officer",
+    imgSrc: "delapouite/police-officer-head.svg",
+    color: "red",
+    militaryBonus: 1,
+  },
+  {
+    name: "Geologist",
+    imgSrc: "delapouite/miner.svg",
+    color: "brown",
+    geologyBonus: 1,
+  },
+  {
+    name: "Botanist",
+    imgSrc: "delapouite/farmer.svg",
     color: "green",
-    metalworkingBonus: -0.5,
-    farmingBonus: 1,
-    consumption: [{ wheat: 1 }],
-    production: [{ money: 1 }],
+    botanyBonus: 1,
+  },
+  {
+    name: "Medic",
+    imgSrc: "delapouite/rod-of-asclepius.svg",
+    color: "white",
+    medicalBonus: 1,
+  },
+  {
+    name: "Tourist",
+    imgSrc: "delapouite/person.svg",
+    color: "yellow",
+  },
+  {
+    name: "Child",
+    imgSrc: "delapouite/jumping-rope.svg",
+    color: "pink",
+  },
+  {
+    name: "Elder",
+    imgSrc: "lorc/beard.svg",
+    color: "gray",
+  },
+  {
+    name: "Drone",
+    imgSrc: "delapouite/tracked-robot.svg",
+    color: "gray",
   },
 ];
 const resources = [
   {
-    id: "wheat",
-    name: "Wheat",
-    img: "",
-    imgSrc: "lorc/wheat.svg",
-    color: "wheat",
-  },
-  {
-    id: "ore_iron",
-    name: "Iron Ore",
-    img: "",
-    imgSrc: "faithtoken/ore.svg",
-    color: "rgb(204, 148, 130)",
-  },
-  {
-    id: "ore_copper",
-    name: "Copper Ore",
-    img: "",
-    imgSrc: "faithtoken/ore.svg",
-    color: "rgb(31, 128, 129)",
-  },
-  {
-    id: "ore_tin",
-    name: "Tin Ore",
-    img: "",
-    imgSrc: "faithtoken/ore.svg",
-    color: "rgb(179, 179, 179)",
-  },
-  {
     id: "money",
     name: "Gold Coins",
-    img: "",
     imgSrc: "lorc/crown-coin.svg",
     color: "gold",
   },
-];
-
-const machines = [
-  { name: "Idle", crew: [6, 0, 0] },
   {
-    name: "Iron Mine",
-    crew: [2, 3, 3],
-    bonusesUsed: ["metalworkingBonus"],
-    produce: [{ ore_iron: 1 }],
+    id: "science",
+    name: "Science",
+    imgSrc: "lorc/fizzing-flask.svg",
+    color: "lightblue",
+  },
+  {
+    id: "energy",
+    name: "Electricity",
+    imgSrc: "sbed/electric.svg",
+    color: "yellow",
+  },
+  {
+    id: "oxygen",
+    name: "Oxygen",
+    imgSrc: "lorc/fluffy-cloud.svg",
+    color: "cyan",
+  },
+  {
+    id: "water",
+    name: "Water",
+    imgSrc: "sbed/water-drop.svg",
+    color: "Blue",
+  },
+  {
+    id: "metal",
+    name: "Metal",
+    imgSrc: "lorc/metal-bar.svg",
+    color: "red",
+  },
+  {
+    id: "concrete",
+    name: "Concrete",
+    imgSrc: "delapouite/concrete-bag.svg",
+    color: "gray",
+  },
+  {
+    id: "food",
+    name: "Food",
+    imgSrc: "lorc/shiny-apple.svg",
+    color: "lime",
+  },
+  {
+    id: "metal_rare",
+    name: "Rare Metals",
+    imgSrc: "willdabeast/gold-bar.svg",
+    color: "gold",
+  },
+  {
+    id: "polymers",
+    name: "Polymers",
+    imgSrc: "delapouite/plastic-duck.svg",
+    color: "gold",
+  },
+  {
+    id: "machine_parts",
+    name: "Machine Parts",
+    imgSrc: "lorc/gears.svg",
+    color: "grey",
+  },
+  {
+    id: "fuel",
+    name: "Fuel",
+    imgSrc: "delapouite/gas-pump.svg",
+    color: "orange",
+  },
+  {
+    id: "electronics",
+    name: "Electronic Components",
+    imgSrc: "lorc/circuitry.svg",
+    color: "lime",
+  },
+  {
+    id: "seed",
+    name: "Seeds",
+    imgSrc: "delapouite/plant-seed.svg",
+    color: "green",
+  },
+  {
+    id: "rocks",
+    name: "Rocks",
+    imgSrc: "lorc/rock.svg",
+    color: "grey",
+  },
+];
+const machines = [
+  { name: "Idle", crew: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+  {
+    name: "Drone Hub",
+    producePerProd: [{ ore_iron: 1 }],
   },
   {
     name: "Copper Mine",
-    crew: [0, 3, 0],
     bonusesUsed: ["metalworkingBonus"],
-    produce: [{ ore_copper: 1 }],
+    producePerProd: [{ ore_copper: 1 }],
   },
   {
     name: "Farming",
-    crew: [0, 0, 3],
     bonusesUsed: ["farmingBonus"],
-    produce: [{ wheat: 1 }],
+    producePerProd: [{ wheat: 1 }],
   },
   {
     name: "Tin Flowers",
-    crew: [0, 0, 1],
     bonusesUsed: ["farmingBonus", "metalworkingBonus"],
-    produce: [{ wheat: 1 }, { ore_tin: 1 }],
+    producePerProd: [{ wheat: 1 }, { ore_tin: 1 }],
+  },
+  {
+    name: "Smelter",
+    bonusesUsed: ["metalworkingBonus"],
+    producePerProd: [{ iron_ingot: 1 }],
+    expensesPerPop: [{ ore_iron: 2 }],
   },
 ];
 let mousedOverCrew = -1;
@@ -117,7 +207,7 @@ function dragCrewStartHandler(ev) {
   };
   setTimeout(() => {
     document.body.removeChild(dragImg);
-    renderMachines();
+    updateMachineGraphics();
   }, 1);
 }
 
@@ -129,7 +219,7 @@ function dragCrewEndHandler(ev) {
     machines[dragData.originMachine].crew[dragData.race] += dragData.count;
   }
   dragData = null;
-  renderMachines();
+  updateMachineGraphics();
 }
 
 function mouseOverCrew(ev) {
@@ -139,10 +229,24 @@ function mouseOverMachine(ev) {
   mousedOverMachine = ev.currentTarget;
 }
 
+function updateMachineGraphics() {
+  clearMachines();
+  calculateIncomeAndExpenses();
+  calculateCore();
+  renderIncomeAndExpenses();
+  for (let i = 0; i < machines.length; i++) {
+    renderAllRaces(machines[i]);
+  }
+}
+
 function renderAllRaces(machine) {
   const crewField = machine.crewField;
+  crewField.innerHTML = "";
   if (machine.crew == null || machine.crew.length != races.length) {
-    machine.crew = [0, 0, 0];
+    machine.crew = [];
+    for (let i = 0; i < races.length; i++) {
+      machine.crew.push(0);
+    }
   }
   for (let i = 0; i < races.length; i++) {
     if (machine.crew[i] == 0) {
@@ -150,6 +254,114 @@ function renderAllRaces(machine) {
     }
     const crewImg = generateCrewBlock(i, machine.crew[i], machine.index);
     crewField.appendChild(crewImg);
+  }
+}
+
+function clearMachines() {
+  for (let i = 0; i < machines.length; i++) {
+    machines[i].income = [];
+    machines[i].expenses = [];
+    if (machines[i].incomeDiv != null) {
+      machines[i].incomeDiv.innerHTML = "";
+    }
+    if (machines[i].expensesDiv != null) {
+      machines[i].expensesDiv.innerHTML = "";
+    }
+  }
+}
+
+function calculateIncomeAndExpenses() {
+  //clearMachines() has been called before this function
+  for (let i = 0; i < machines.length; i++) {
+    const machine = machines[i];
+    let productivity = 0;
+    let crew = 0;
+    for (let i = 0; i < machine.crew.length; i++) {
+      let crewCount = machine.crew[i];
+      let raceBonus = 0;
+      if (machine.bonusesUsed != null) {
+        machine.bonusesUsed.forEach((bonus) => {
+          if (races[i][bonus] != null) {
+            raceBonus += races[i][bonus];
+          }
+        });
+      }
+      productivity += crewCount * (2 + raceBonus);
+      crew += crewCount;
+    }
+    if (machine.producePerProd != null) {
+      machine.producePerProd.forEach((element) => {
+        if (productivity <= 0) {
+          return;
+        }
+        const resourceId = Object.keys(element)[0];
+        const resourceAmmount = Object.values(element)[0] * productivity;
+        machines[i].income[resourceId] =
+          (machines[i].income[resourceId] || 0) + resourceAmmount;
+      });
+    }
+    if (machine.expensesPerPop != null) {
+      console.log("Calculating expenses for", machine.name, crew);
+      machine.expensesPerPop.forEach((element) => {
+        if (crew <= 0) {
+          return;
+        }
+        const resourceId = Object.keys(element)[0];
+        const resourceAmmount = Object.values(element)[0] * crew;
+        machines[i].expenses[resourceId] =
+          (machines[i].expenses[resourceId] || 0) + resourceAmmount;
+        console.log("Expense", resourceId, resourceAmmount);
+      });
+    }
+  }
+}
+
+function renderIncomeAndExpenses() {
+  for (let i = 0; i < machines.length; i++) {
+    const machine = machines[i];
+    let incomeOutput = "";
+    for (const resourceId in machine.income) {
+      if (
+        machine.income[resourceId] == null ||
+        machine.income[resourceId] <= 0
+      ) {
+        continue;
+      }
+      incomeOutput +=
+        (incomeOutput.length > 0 ? ", " : "") +
+        machine.income[resourceId] +
+        " " +
+        getObjectById(resources, resourceId).name;
+      machine.incomeDiv.appendChild(
+        generateResourceBlock(
+          resourceId,
+          Math.floor(machine.income[resourceId])
+        )
+      );
+    }
+    machine.incomeDiv.innerHTML +=
+      (incomeOutput.length > 0 ? "Income: " : "") + incomeOutput;
+    let expensesOutput = "";
+    for (const resourceId in machine.expenses) {
+      if (
+        machine.expenses[resourceId] == null ||
+        machine.expenses[resourceId] <= 0
+      ) {
+        continue;
+      }
+      console.log(resourceId);
+      expensesOutput +=
+        (expensesOutput.length > 0 ? ", " : "") +
+        machine.expenses[resourceId] +
+        " " +
+        getObjectById(resources, resourceId).name;
+      machine.expensesDiv.appendChild(
+        generateResourceBlock(
+          resourceId,
+          Math.floor(machine.expenses[resourceId])
+        )
+      );
+    }
   }
 }
 
@@ -175,44 +387,12 @@ function renderMachines() {
     expenses.className = "expenses";
     expenses.textContent = "Expenses";
     wrapper.appendChild(expenses);
+    machine.expensesDiv = expenses;
 
     const income = document.createElement("div");
-    let productivity = 0;
-    for (let i = 0; i < machine.crew.length; i++) {
-      let crewCount = machine.crew[i];
-      let raceBonus = 0;
-      if (machine.bonusesUsed != null) {
-        machine.bonusesUsed.forEach((bonus) => {
-          if (races[i][bonus] != null) {
-            raceBonus += races[i][bonus];
-          }
-        });
-      }
-      productivity += crewCount * (2 + raceBonus);
-    }
-    let output = "";
-    if (machine.produce != null) {
-      machine.produce.forEach((element) => {
-        if (productivity <= 0) {
-          return;
-        }
-        output +=
-          (output.length > 0 ? ", " : "") +
-          Object.values(element)[0] * productivity +
-          " " +
-          resources.find((r) => r.id == Object.keys(element)[0]).name;
-        income.appendChild(
-          generateResourceBlock(
-            Object.keys(element)[0],
-            Math.floor(Object.values(element)[0] * productivity)
-          )
-        );
-      });
-    }
+
     income.className = "income";
-    //income.textContent = "Income: " + output;
     wrapper.appendChild(income);
-    income.innerHTML += "Income: " + output;
     machine.incomeDiv = income;
 
     const crewField = document.createElement("div");
@@ -224,11 +404,10 @@ function renderMachines() {
 
     div.addEventListener("dragover", mouseOverMachine);
   });
-  renderCore();
+  updateMachineGraphics();
 }
 
-function renderCore() {
-  machines[0].incomeDiv.innerHTML = "";
+function calculateCore() {
   const population = [];
   for (let i = 0; i < machines.length; i++) {
     for (let j = 0; j < machines[i].crew.length; j++) {
@@ -239,37 +418,16 @@ function renderCore() {
     population[dragData.race] += dragData.count;
   }
   // Calculate income from population
-  const popIncome = new Map();
   for (let i = 0; i < population.length; i++) {
     if (races[i].production != null) {
       races[i].production.forEach((element) => {
         const resource = getResourceById(Object.keys(element)[0]);
-        popIncome.set(
-          resource.id,
-          (popIncome.get(resource.id) || 0) +
-            Object.values(element)[0] * population[i]
-        );
+        const ammount = Object.values(element)[0] * population[i];
+        machines[0].income[resource.id] =
+          (machines[0].income[resource.id] || 0) + ammount;
       });
     }
   }
-  console.log(popIncome);
-
-  let output = "";
-  popIncome.forEach((value, key) => {
-    if (value == null || value <= 0) {
-      return;
-    }
-    console.log(key, value);
-    output +=
-      (output.length > 0 ? ", " : "") +
-      value +
-      " " +
-      getObjectById(resources, key).name;
-    machines[0].incomeDiv.appendChild(
-      generateResourceBlock(key, Math.floor(value))
-    );
-  });
-  machines[0].incomeDiv.innerHTML += "Income: " + output;
 }
 
 function generateCrewBlock(race, count = 1, machine = -1) {
