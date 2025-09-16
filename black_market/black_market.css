@@ -1,0 +1,13 @@
+.priceSpan {
+  width: 20%;
+  display: inline-block;
+}
+.produce {
+  outline: 3px solid black;
+  padding: 4px;
+  border-radius: 8px;
+  margin: 8px;
+}
+h3 {
+  margin: 0;
+}
