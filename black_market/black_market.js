@@ -93,6 +93,10 @@ const produce = [
 ];
 const itemDiv = document.getElementById("items");
 const totalDiv = document.getElementById("total");
+const moneyPaidInput = document.getElementById("moneyPaidInput");
+const changeDiv = document.getElementById("changeDiv");
+const moneyTypes = [1000, 500, 200, 100, 50, 20, 10, 5, 2, 1];
+let total = 0;
 
 function renderItems() {
   for (let i = 0; i < produce.length; i++) {
@@ -123,13 +127,31 @@ function renderItems() {
   }
 }
 function calcTotal() {
-  let total = 0;
+  total = 0;
   for (let i = 0; i < produce.length; i++) {
     let partCost = produce[i].ammountInput.value * produce[i].price;
     produce[i].costSpan.innerText = partCost + " sek";
     total += partCost;
   }
   total = total.toFixed(2);
-  totalDiv.innerText = total + " sek";
+  totalDiv.innerText = "Total: " + total + " sek";
+}
+function calcChange() {
+  const paidAmmount = moneyPaidInput.value;
+  let paidBack = Math.floor(paidAmmount - total);
+  if (paidBack < 0) {
+    changeDiv.innerHTML =
+      "<strong>Not enough money provided to pay for goods</strong>";
+    return;
+  }
+  changeDiv.innerHTML = "Money back: " + paidBack + "sek<br/>";
+  for (let i = 0; i < moneyTypes.length; i++) {
+    let cointPaidBack = Math.floor(paidBack / moneyTypes[i]);
+    if (cointPaidBack > 0) {
+      changeDiv.innerHTML += cointPaidBack + " x " + moneyTypes[i] + "sek<br/>";
+      paidBack -= cointPaidBack * moneyTypes[i];
+    }
+  }
 }
 renderItems();
+calcTotal();
