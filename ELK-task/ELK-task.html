@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link href="ELK-task.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="right-half">
+      <div id="board"></div>
+      <div class="input">
+        <label for="width">Width</label
+        ><input type="number" id="width" value="5" min="3" max="10" />
+      </div>
+      <div class="input">
+        <label for="height">Height</label
+        ><input type="number" id="height" value="8" min="3" max="10" />
+      </div>
+      <div class="input">
+        <label for="colorCount">Number of colors</label
+        ><input type="number" id="colorCount" value="5" min="4" max="10" />
+      </div>
+      <div class="input">
+        <label for="maxClusterSize">Max Cluster Size</label
+        ><input type="number" id="maxClusterSize" value="5" min="1" max="99" />
+      </div>
+      <div class="input">
+        <button onclick="readInput()">Generate</button>
+      </div>
+    </div>
+    <div class="left-side" id="validation">hello</div>
+  </body>
+  <script src="ELK-task.js"></script>
+</html>
