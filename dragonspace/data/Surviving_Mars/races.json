@@ -1,0 +1,76 @@
+[
+  {
+    "type": "race",
+    "name": "Human",
+    "imgSrc": "delapouite/person.svg",
+    "color": "beige",
+    "consumption": [{ "wheat": 1 }],
+    "production": [{ "money": 1 }]
+  },
+  {
+    "type": "race",
+    "name": "Scientist",
+    "imgSrc": "delapouite/lab-coat.svg",
+    "color": "lightblue",
+    "scienceBonus": 1
+  },
+  {
+    "type": "race",
+    "name": "Engineer",
+    "imgSrc": "delapouite/person.svg",
+    "color": "orange",
+    "engineeringBonus": 1
+  },
+  {
+    "type": "race",
+    "name": "Officer",
+    "imgSrc": "delapouite/police-officer-head.svg",
+    "color": "red",
+    "militaryBonus": 1
+  },
+  {
+    "type": "race",
+    "name": "Geologist",
+    "imgSrc": "delapouite/miner.svg",
+    "color": "brown",
+    "geologyBonus": 1
+  },
+  {
+    "type": "race",
+    "name": "Botanist",
+    "imgSrc": "delapouite/farmer.svg",
+    "color": "green",
+    "botanyBonus": 1
+  },
+  {
+    "type": "race",
+    "name": "Medic",
+    "imgSrc": "delapouite/rod-of-asclepius.svg",
+    "color": "white",
+    "medicalBonus": 1
+  },
+  {
+    "type": "race",
+    "name": "Tourist",
+    "imgSrc": "delapouite/person.svg",
+    "color": "yellow"
+  },
+  {
+    "type": "race",
+    "name": "Child",
+    "imgSrc": "delapouite/jumping-rope.svg",
+    "color": "pink"
+  },
+  {
+    "type": "race",
+    "name": "Elder",
+    "imgSrc": "lorc/beard.svg",
+    "color": "gray"
+  },
+  {
+    "type": "race",
+    "name": "Drone",
+    "imgSrc": "delapouite/tracked-robot.svg",
+    "color": "gray"
+  }
+]

@@ -1,3 +1,36 @@
+class SvgHolder {
+  imgScr;
+  img;
+  constructor(data) {
+    if (data.imgSrc == null) {
+      return;
+    }
+    if (data.color == null) {
+      data.color == "black";
+    }
+    if (!data.imgScr.incudes(".svg")) {
+      data.imgScr = data.imgScr + ".svg";
+    }
+    startAsync(1);
+    fetch("../icons/ffffff/transparent/1x1/" + data.imgSrc)
+      .then((r) => r.text())
+      .then((text) => {
+        data.img = text.replace("#fff", data.color);
+
+        endAsync();
+      });
+  }
+}
+
+class Race extends SvgHolder {
+  name;
+  consumption;
+  production;
+  constructor(data) {
+    super(data);
+  }
+}
+
 const races = [
   {
     name: "Human",

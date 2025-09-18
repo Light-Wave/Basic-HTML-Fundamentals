@@ -85,7 +85,6 @@ function validateInput(boardLayout) {
   validationDiv.innerHTML = "";
   const rows = boardLayout.length;
   const cols = boardLayout[0].length;
-  console.log("boardLayout.length: " + boardLayout.length);
   const usedColors = new Map();
   let largestBlock = 0;
   const visited = [];
@@ -158,7 +157,7 @@ function addValidationOutput(
       correctness = 0;
     }
   } else {
-    let highestValueAccepted = expected + uppwardsAcceptance;
+    let highestValueAccepted = parseInt(expected) + uppwardsAcceptance;
     if (value <= highestValueAccepted) {
       correctness = 1 - (highestValueAccepted - value) / uppwardsAcceptance;
     } else {
@@ -260,6 +259,24 @@ function generateColors() {
       }
     }
   }
+}
+
+function getNeigbors(board, posX, posY) {
+  const returnValue = [];
+  if (posX > 0) {
+    returnValue.push({ x: posX - 1, y: posY, tile: board[posX - 1][posY] });
+  }
+  if (currentTile.y > 0) {
+    returnValue.push({ x: posX, y: posY - 1, tile: board[posX][posY - 1] });
+  }
+  if (currentTile.x < boardLayout.length - 1) {
+    returnValue.push({ x: posX + 1, y: posY, tile: board[posX + 1][posY] });
+  }
+  if (currentTile.y < boardLayout[0].length - 1) {
+    returnValue.push({ x: posX, y: posY + 1, tile: board[posX][posY + 1] });
+  }
+
+  return returnValue;
 }
 
 generateColors();

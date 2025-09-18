@@ -1,0 +1,37 @@
+[
+  {
+    "type": "machine",
+    "name": "Idle",
+    "crew": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+  },
+  {
+    "type": "machine",
+    "name": "Drone Hub",
+    "producePerProd": [{ "ore_iron": 1 }]
+  },
+  {
+    "type": "machine",
+    "name": "Copper Mine",
+    "bonusesUsed": ["metalworkingBonus"],
+    "producePerProd": [{ "ore_copper": 1 }]
+  },
+  {
+    "type": "machine",
+    "name": "Farming",
+    "bonusesUsed": ["farmingBonus"],
+    "producePerProd": [{ "wheat": 1 }]
+  },
+  {
+    "type": "machine",
+    "name": "Tin Flowers",
+    "bonusesUsed": ["farmingBonus", "metalworkingBonus"],
+    "producePerProd": [{ "wheat": 1 }, { "ore_tin": 1 }]
+  },
+  {
+    "type": "machine",
+    "name": "Smelter",
+    "bonusesUsed": ["metalworkingBonus"],
+    "producePerProd": [{ "iron_ingot": 1 }],
+    "expensesPerPop": [{ "ore_iron": 2 }]
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "type": "resource",
+    "id": "money",
+    "name": "Gold Coins",
+    "imgSrc": "lorc/crown-coin.svg",
+    "color": "gold"
+  },
+  {
+    "type": "resource",
+    "id": "science",
+    "name": "Science",
+    "imgSrc": "lorc/fizzing-flask.svg",
+    "color": "lightblue"
+  },
+  {
+    "type": "resource",
+    "id": "energy",
+    "name": "Electricity",
+    "imgSrc": "sbed/electric.svg",
+    "color": "yellow"
+  },
+  {
+    "type": "resource",
+    "id": "oxygen",
+    "name": "Oxygen",
+    "imgSrc": "lorc/fluffy-cloud.svg",
+    "color": "cyan"
+  },
+  {
+    "type": "resource",
+    "id": "water",
+    "name": "Water",
+    "imgSrc": "sbed/water-drop.svg",
+    "color": "Blue"
+  },
+  {
+    "type": "resource",
+    "id": "metal",
+    "name": "Metal",
+    "imgSrc": "lorc/metal-bar.svg",
+    "color": "red"
+  },
+  {
+    "type": "resource",
+    "id": "concrete",
+    "name": "Concrete",
+    "imgSrc": "delapouite/concrete-bag.svg",
+    "color": "gray"
+  },
+  {
+    "type": "resource",
+    "id": "food",
+    "name": "Food",
+    "imgSrc": "lorc/shiny-apple.svg",
+    "color": "lime"
+  },
+  {
+    "type": "resource",
+    "id": "metal_rare",
+    "name": "Rare Metals",
+    "imgSrc": "willdabeast/gold-bar.svg",
+    "color": "gold"
+  },
+  {
+    "type": "resource",
+    "id": "polymers",
+    "name": "Polymers",
+    "imgSrc": "delapouite/plastic-duck.svg",
+    "color": "gold"
+  },
+  {
+    "type": "resource",
+    "id": "machine_parts",
+    "name": "Machine Parts",
+    "imgSrc": "lorc/gears.svg",
+    "color": "grey"
+  },
+  {
+    "type": "resource",
+    "id": "fuel",
+    "name": "Fuel",
+    "imgSrc": "delapouite/gas-pump.svg",
+    "color": "orange"
+  },
+  {
+    "type": "resource",
+    "id": "electronics",
+    "name": "Electronic Components",
+    "imgSrc": "lorc/circuitry.svg",
+    "color": "lime"
+  },
+  {
+    "type": "resource",
+    "id": "seed",
+    "name": "Seeds",
+    "imgSrc": "delapouite/plant-seed.svg",
+    "color": "green"
+  },
+  {
+    "type": "resource",
+    "id": "rocks",
+    "name": "Rocks",
+    "imgSrc": "lorc/rock.svg",
+    "color": "grey"
+  }
+]
