@@ -6,7 +6,14 @@ func dropSyms(rows, cols int, syms rune[], opt Options) [][]rune {
 // your code here
 }
 */
-
+class Cluster {
+  clusterID;
+  members = [];
+  neighbors = new Set();
+  open = [];
+  symbol;
+  nudge = 0;
+}
 const Options = {
   maxClusterSize: 5,
 };
@@ -17,6 +24,7 @@ const heightInput = document.getElementById("height");
 const colorCountInput = document.getElementById("colorCount");
 const validationDiv = document.getElementById("validation");
 const maxClusterSizeInput = document.getElementById("maxClusterSize");
+let debugMap = [];
 
 function dropSyms_random(rows, cols, syms, opt) {
   const returnValue = [];
@@ -29,30 +37,122 @@ function dropSyms_random(rows, cols, syms, opt) {
   return returnValue;
 }
 function dropSyms(rows, cols, syms, opt) {
+  console.log("#####################################################");
   const returnValue = [];
-  const clusterPercentage = 1 / opt.maxClusterSize;
+  const clusterMap = [];
+  const remainingTiles = new Set();
   const clusters = [];
 
-  for (let i = 0; i < rows; i++) {
-    returnValue[i] = [];
-    for (let j = 0; j < cols; j++) {
-      if (Math.random() <= clusterPercentage) {
-        let newCluster = new Object();
-        newCluster.positions = [];
-        newCluster.positions.push({ x: i, y: j });
-        newCluster.symbol = syms[Math.floor(Math.random() * syms.length)];
-        clusters.push(newCluster);
-        returnValue[i][j] = newCluster.symbol;
-      }
+  // Populate data structures
+  for (let x = 0; x < rows; x++) {
+    returnValue[x] = [];
+    clusterMap[x] = [];
+    for (let y = 0; y < cols; y++) {
+      remainingTiles.add(x + ":" + y);
+      clusterMap[x][y] = -1;
     }
   }
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      if (returnValue[i][j] == null) {
-        returnValue[i][j] = syms[0];
+  while (remainingTiles.size > 0) {
+    // Pick a random unpainted spot
+    item =
+      Array.from(remainingTiles)[
+        Math.floor(Math.random() * remainingTiles.size)
+      ];
+    remainingTiles.delete(item);
+    let components = item.split(":");
+    let xPos = parseInt(components[0]);
+    let yPos = parseInt(components[1]);
+
+    // Set up a cluster
+    const cluster = new Cluster();
+    cluster.clusterID = clusters.length;
+    cluster.open.push({ x: xPos, y: yPos });
+
+    //Start growing the cluster
+    while (
+      cluster.open.length > 0 &&
+      cluster.members.length < opt.maxClusterSize
+    ) {
+      const index = Math.floor(Math.random() * cluster.open.length); //Got help from chatGPT
+      const current = cluster.open.splice(index, 1)[0]; // Got help from chatGPT
+      clusterMap[current.x][current.y] = cluster.clusterID;
+      cluster.members.push(current);
+      remainingTiles.delete(current.x + ":" + current.y);
+
+      const neighbors = getneighbors(clusterMap, current.x, current.y);
+      neighbors.forEach((neighbor) => {
+        if (neighbor.tile == -1) {
+          cluster.open.push({ x: neighbor.x, y: neighbor.y });
+        }
+      });
+    }
+
+    //Find neighboring clusters
+    cluster.members.forEach((tile) => {
+      getneighbors(clusterMap, tile.x, tile.y).forEach((neighbor) => {
+        if (neighbor.tile != -1 && neighbor.tile != cluster.clusterID) {
+          cluster.neighbors.add(neighbor.tile);
+          clusters[neighbor.tile].neighbors.add(cluster.clusterID);
+        }
+      });
+    });
+
+    clusters.push(cluster);
+  }
+
+  // Paint clusters
+  let nudge = 0;
+  for (let clusterItt = 0; clusterItt < clusters.length; clusterItt++) {
+    const cluster = clusters[clusterItt];
+    // Use a Four color theorem algorithm to ensure no neighboring clusters share color
+    let foundValid = false;
+    cluster.symbol = null;
+    for (let symbolItt = 0; symbolItt < syms.length; symbolItt++) {
+      let newSymbol = (clusterItt + symbolItt) % syms.length;
+      let isValid = true;
+      cluster.neighbors.forEach((neighbor) => {
+        /*console.log(
+          foundValid + ", " + clusters[neighbor].symbol + ", " + newSymbol
+        );*/
+        if (clusters[neighbor].symbol == newSymbol) {
+          isValid = false;
+        }
+      });
+      if (isValid) {
+        if (nudge > 0) {
+          nudge--;
+          isValid = false;
+        } else {
+          foundValid = true;
+          cluster.symbol = newSymbol;
+          break;
+        }
       }
     }
+    if (!foundValid) {
+      nudge = 1;
+      if (cluster.nudge >= cluster.neighbors.size) {
+        console.log("Could not find valid color for " + clusterItt);
+        nudge = 1 + Math.floor(cluster.nudge / cluster.neighbors.size);
+      }
+      let targetCluster = Array.from(cluster.neighbors)[
+        cluster.nudge % cluster.neighbors.size
+      ];
+      console.log("Trying to nudge " + targetCluster + " due to " + clusterItt);
+      clusters[targetCluster].symbol = null;
+      clusterItt = Math.min(targetCluster, clusterItt) - 1;
+      cluster.nudge++;
+    }
   }
+
+  // Paint tiles
+  clusters.forEach((cluster) => {
+    cluster.members.forEach((tile) => {
+      returnValue[tile.x][tile.y] = syms[cluster.symbol];
+    });
+  });
+
+  debugMap = clusterMap;
   return returnValue;
 }
 
@@ -74,7 +174,7 @@ function generateBoard(width, height, symbolCount) {
       const tableData = document.createElement("td");
       const symbol = boardLayout[x][y];
       tableData.style = "background-color: " + symbol;
-      //tableData.innerHTML = x + ", " + y;
+      tableData.innerHTML = debugMap[x][y];
       tableRow.appendChild(tableData);
     }
   }
@@ -181,46 +281,17 @@ function calculateBlock(boardLayout, visited, posX, posY) {
   let blockCount = 1;
   while (open.length > 0) {
     currentTile = open.pop();
-    if (
-      currentTile.x > 0 &&
-      visited[currentTile.x - 1][currentTile.y] == false &&
-      boardLayout[currentTile.x - 1][currentTile.y] ==
-        boardLayout[currentTile.x][currentTile.y]
-    ) {
-      blockCount++;
-      open.push({ x: currentTile.x - 1, y: currentTile.y });
-      visited[currentTile.x - 1][currentTile.y] = true;
-    }
-    if (
-      currentTile.y > 0 &&
-      visited[currentTile.x][currentTile.y - 1] == false &&
-      boardLayout[currentTile.x][currentTile.y - 1] ==
-        boardLayout[currentTile.x][currentTile.y]
-    ) {
-      blockCount++;
-      open.push({ x: currentTile.x, y: currentTile.y - 1 });
-      visited[currentTile.x][currentTile.y - 1] = true;
-    }
-    if (
-      currentTile.x < boardLayout.length - 1 &&
-      visited[currentTile.x + 1][currentTile.y] == false &&
-      boardLayout[currentTile.x + 1][currentTile.y] ==
-        boardLayout[currentTile.x][currentTile.y]
-    ) {
-      blockCount++;
-      open.push({ x: currentTile.x + 1, y: currentTile.y });
-      visited[currentTile.x + 1][currentTile.y] = true;
-    }
-    if (
-      currentTile.y < boardLayout[0].length - 1 &&
-      visited[currentTile.x][currentTile.y + 1] == false &&
-      boardLayout[currentTile.x][currentTile.y + 1] ==
-        boardLayout[currentTile.x][currentTile.y]
-    ) {
-      blockCount++;
-      open.push({ x: currentTile.x, y: currentTile.y + 1 });
-      visited[currentTile.x][currentTile.y + 1] = true;
-    }
+    const neighbors = getneighbors(boardLayout, currentTile.x, currentTile.y);
+    neighbors.forEach((neighbor) => {
+      if (
+        visited[neighbor.x][neighbor.y] == false &&
+        neighbor.tile == boardLayout[currentTile.x][currentTile.y]
+      ) {
+        blockCount++;
+        open.push({ x: neighbor.x, y: neighbor.y });
+        visited[neighbor.x][neighbor.y] = true;
+      }
+    });
   }
   return blockCount;
 }
@@ -259,20 +330,21 @@ function generateColors() {
       }
     }
   }
+  symbols.pop(); // removes white to make debugging easier
 }
 
-function getNeigbors(board, posX, posY) {
+function getneighbors(board, posX, posY) {
   const returnValue = [];
   if (posX > 0) {
     returnValue.push({ x: posX - 1, y: posY, tile: board[posX - 1][posY] });
   }
-  if (currentTile.y > 0) {
+  if (posY > 0) {
     returnValue.push({ x: posX, y: posY - 1, tile: board[posX][posY - 1] });
   }
-  if (currentTile.x < boardLayout.length - 1) {
+  if (posX < board.length - 1) {
     returnValue.push({ x: posX + 1, y: posY, tile: board[posX + 1][posY] });
   }
-  if (currentTile.y < boardLayout[0].length - 1) {
+  if (posY < board[0].length - 1) {
     returnValue.push({ x: posX, y: posY + 1, tile: board[posX][posY + 1] });
   }
 
@@ -280,4 +352,4 @@ function getNeigbors(board, posX, posY) {
 }
 
 generateColors();
-generateBoard(5, 8, 5);
+readInput();
