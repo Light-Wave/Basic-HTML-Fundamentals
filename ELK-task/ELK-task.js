@@ -12,10 +12,13 @@ class Cluster {
   neighbors = new Set();
   open = [];
   symbol;
-  nudge = 0;
+  nudgingNeighbor = 0;
+  sortedID;
 }
 const Options = {
   maxClusterSize: 5,
+  errorsAllowed: 10, // Determines how hard the algorithm will try before it gives up
+  failSilently: false, // If it gives up, should it return null, or fill the missing pieces with random tiles?
 };
 const symbols = [];
 const boardDiv = document.getElementById("board");
@@ -100,55 +103,84 @@ function dropSyms(rows, cols, syms, opt) {
     clusters.push(cluster);
   }
 
+  // Sort clusters
+  let sortedClusters = clusters.toSorted((a, b) => {
+    return b.neighbors.size - a.neighbors.size;
+  });
+  for (let i = 0; i < sortedClusters.length; i++) {
+    sortedClusters[i].sortedID = i;
+  }
+
   // Paint clusters
-  let nudge = 0;
-  for (let clusterItt = 0; clusterItt < clusters.length; clusterItt++) {
-    const cluster = clusters[clusterItt];
+  let majorErrors = 0;
+  for (let clusterItt = 0; clusterItt < sortedClusters.length; clusterItt++) {
+    const cluster = sortedClusters[clusterItt];
     // Use a Four color theorem algorithm to ensure no neighboring clusters share color
+    // TODO: Make this time deterministic! Don't randomly shuffle colors untill it works, but instead shuffle them intelligently.
     let foundValid = false;
     cluster.symbol = null;
+    let randomStartColor = Math.floor(Math.random() * syms.length);
     for (let symbolItt = 0; symbolItt < syms.length; symbolItt++) {
-      let newSymbol = (clusterItt + symbolItt) % syms.length;
+      let newSymbol = (randomStartColor + symbolItt) % syms.length;
       let isValid = true;
       cluster.neighbors.forEach((neighbor) => {
-        /*console.log(
-          foundValid + ", " + clusters[neighbor].symbol + ", " + newSymbol
-        );*/
         if (clusters[neighbor].symbol == newSymbol) {
           isValid = false;
         }
       });
       if (isValid) {
-        if (nudge > 0) {
-          nudge--;
-          isValid = false;
-        } else {
-          foundValid = true;
-          cluster.symbol = newSymbol;
-          break;
-        }
+        foundValid = true;
+        cluster.symbol = newSymbol;
+        break;
       }
     }
     if (!foundValid) {
-      nudge = 1;
-      if (cluster.nudge >= cluster.neighbors.size) {
-        console.log("Could not find valid color for " + clusterItt);
-        nudge = 1 + Math.floor(cluster.nudge / cluster.neighbors.size);
+      cluster.nudgingNeighbor++;
+      if (cluster.nudgingNeighbor >= cluster.neighbors.size) {
+        /*console.log(
+          "Could not find valid color for " +
+            sortedClusters[clusterItt].clusterID
+        );*/
+        cluster.nudgingColors++;
+        majorErrors++;
+        if (majorErrors > opt.majorErrorsAllowed) {
+          console.log("dropSyms failed to find a valid configuration!");
+          if (opt.failSilently) {
+            break;
+          } else {
+            return null;
+          }
+        }
       }
       let targetCluster = Array.from(cluster.neighbors)[
-        cluster.nudge % cluster.neighbors.size
+        cluster.nudgingNeighbor % cluster.neighbors.size
       ];
-      console.log("Trying to nudge " + targetCluster + " due to " + clusterItt);
+      /*console.log(
+        "Trying to nudge " +
+          targetCluster +
+          " due to " +
+          sortedClusters[clusterItt].clusterID
+      );*/
       clusters[targetCluster].symbol = null;
-      clusterItt = Math.min(targetCluster, clusterItt) - 1;
-      cluster.nudge++;
+      clusterItt =
+        [
+          Math.min(
+            clusters[targetCluster].sortedID,
+            sortedClusters[clusterItt].sortedID
+          ),
+        ] - 1;
     }
   }
 
   // Paint tiles
   clusters.forEach((cluster) => {
     cluster.members.forEach((tile) => {
-      returnValue[tile.x][tile.y] = syms[cluster.symbol];
+      if (cluster.symbol != undefined) {
+        returnValue[tile.x][tile.y] = syms[cluster.symbol];
+      } else {
+        returnValue[tile.x][tile.y] =
+          syms[Math.floor(Math.random() * syms.length)];
+      }
     });
   });
 
@@ -181,6 +213,19 @@ function generateBoard(width, height, symbolCount) {
   validateInput(boardLayout);
 }
 
+function stressTest() {
+  let fails = 0;
+  let sucsesses = 0;
+  for (let i = 0; i < 10000; i++) {
+    let boardLayout = dropSyms(10, 10, getSymbolSubset(5), Options);
+    if (boardLayout == null || !validateInput(boardLayout)) {
+      fails++;
+    } else {
+      sucsesses++;
+    }
+  }
+  console.log("Ran tests; " + sucsesses + " sucesses, " + fails + " fails.");
+}
 function validateInput(boardLayout) {
   validationDiv.innerHTML = "";
   const rows = boardLayout.length;
@@ -224,12 +269,13 @@ function validateInput(boardLayout) {
   addValidationOutput(
     "Average block size: ",
     totalSymbols / totalBlocks,
-    maxClusterSizeInput.value - 2,
+    maxClusterSizeInput.value * 0.8,
     1,
     2
   );
   addValidationOutput("Runes Used: ", usedColors.size, colorCountInput.value);
   addValidationOutput("Smallest Block: ", smallestBlock, 1, 0, 3);
+  return largestBlock <= Options.maxClusterSize;
 }
 
 function addValidationOutput(
@@ -353,3 +399,4 @@ function getneighbors(board, posX, posY) {
 
 generateColors();
 readInput();
+stressTest();
