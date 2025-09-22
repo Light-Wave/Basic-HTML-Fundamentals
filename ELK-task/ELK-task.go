@@ -1,9 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand/v2"
+	"sort"
+)
 
 func main() {
-	fmt.Println("Hello, 世界")
+	fmt.Println("Starting dropSync")
+	fmt.Println(dropSyms(10, 10, []rune{1, 2, 3, 4},Options{maxClusterSize: 5, errorsAllowed: 10, failSilently: true} ));
 }
 type Vector2Int struct{
 	x int;
@@ -25,94 +30,91 @@ type Options struct {
 };
 
 func dropSyms(rows, cols int, syms []rune, opt Options) [][]rune {
-  var returnValue [][]rune;
-  var clusterMap [][]int;
-  var remainingTiles []Vector2Int;
-  //var clusters []Cluster;
-
+  var returnValue = [][]rune{};
+  var clusterMap = [][]int{};
+  var remainingTiles = []Vector2Int{};
+  var clusters = []Cluster{};
   // Populate data structures
   for x := 0; x < rows; x++ {
-    //returnValue[x] = []rune;
-    //clusterMap[x] = []int;
+    returnValue = append(returnValue, []rune{});
+    clusterMap = append(clusterMap, []int{});
     for y := 0; y < cols; y++ {
       remainingTiles = append(remainingTiles, Vector2Int{x:x, y:y});
-      clusterMap[x][y] = -1;
+      clusterMap[x] = append(clusterMap[x], -1);
+      returnValue[x] = append(returnValue[x], -1);
+
     }
   }
-  /*
-  while (remainingTiles.size > 0) {
+  for len(remainingTiles) > 0 {
     // Pick a random unpainted spot
-    item =
-      Array.from(remainingTiles)[
-        Math.floor(Math.random() * remainingTiles.size)
-      ];
-    remainingTiles.delete(item);
-    let components = item.split(":");
-    let xPos = parseInt(components[0]);
-    let yPos = parseInt(components[1]);
+	var randomTileIndex = rand.IntN(len(remainingTiles))
+    var randomTile = remainingTiles[randomTileIndex];
+    remainingTiles = append(remainingTiles[:randomTileIndex], remainingTiles[randomTileIndex+1:]...);
+    var xPos = randomTile.x;
+    var yPos = randomTile.y;
 
     // Set up a cluster
-    const cluster = new Cluster();
-    cluster.clusterID = clusters.length;
-    cluster.open.push({ x: xPos, y: yPos });
-
+    var cluster Cluster;
+    cluster.clusterID = len(clusters);
+	cluster.open = append(cluster.open, Vector2Int{x:xPos, y:yPos});
     //Start growing the cluster
-    while (
-      cluster.open.length > 0 &&
-      cluster.members.length < opt.maxClusterSize
-    ) {
-      const index = Math.floor(Math.random() * cluster.open.length); //Got help from chatGPT
-      const current = cluster.open.splice(index, 1)[0]; // Got help from chatGPT
+    for (len(cluster.open) > 0 && len( cluster.members) < opt.maxClusterSize)  {
+      var index = rand.IntN(len(cluster.open));
+      var current = cluster.open[index];
+      cluster.open = append(cluster.open[:index], cluster.open[index+1:]...); // Delete entry at index
       clusterMap[current.x][current.y] = cluster.clusterID;
-      cluster.members.push(current);
-      remainingTiles.delete(current.x + ":" + current.y);
+	  cluster.members = append(cluster.members, current);
+	  removeRemainingTiles(remainingTiles, current);
 
-      const neighbors = getneighbors(clusterMap, current.x, current.y);
-      neighbors.forEach((neighbor) => {
-        if (neighbor.tile == -1) {
-          cluster.open.push({ x: neighbor.x, y: neighbor.y });
+      var neighbors = getneighbors(clusterMap, current);
+	  for _, neighbor := range neighbors {
+        if (clusterMap[neighbor.x][neighbor.y] == -1) {
+			cluster.open = append(cluster.open, Vector2Int{x:neighbor.x, y:neighbor.y});
         }
-      });
+      }
     }
 
     //Find neighboring clusters
-    cluster.members.forEach((tile) => {
-      getneighbors(clusterMap, tile.x, tile.y).forEach((neighbor) => {
-        if (neighbor.tile != -1 && neighbor.tile != cluster.clusterID) {
-          cluster.neighbors.add(neighbor.tile);
-          clusters[neighbor.tile].neighbors.add(cluster.clusterID);
-        }
-      });
-    });
-
-    clusters.push(cluster);
+	for _, tile := range cluster.members {
+		var neighboringClusters = getneighbors(clusterMap, tile);
+		for _, neighbor := range neighboringClusters {
+			var neighborID = clusterMap[neighbor.x][neighbor.y]
+			if (neighborID != -1 && neighborID != cluster.clusterID) {
+				cluster.neighbors = append(cluster.neighbors, neighborID);
+				clusters[neighborID].neighbors = append(clusters[neighborID].neighbors, cluster.clusterID);
+			}
+		}
+    }
+    cluster.symbol = -1;
+	clusters = append(clusters, cluster);
   }
-
   // Sort clusters
-  let sortedClusters = clusters.toSorted((a, b) => {
-    return b.neighbors.size - a.neighbors.size;
-  });
-  for (let i = 0; i < sortedClusters.length; i++) {
+  var sortedClusters []Cluster;
+  copy(sortedClusters, clusters);
+  sort.Slice(sortedClusters, func(i, j int) bool {
+	return len(sortedClusters[j].neighbors) < len(sortedClusters[i].neighbors)
+  })
+  for i := 0; i < len(sortedClusters); i++ {
     sortedClusters[i].sortedID = i;
   }
 
   // Paint clusters
-  let majorErrors = 0;
-  for (let clusterItt = 0; clusterItt < sortedClusters.length; clusterItt++) {
-    const cluster = sortedClusters[clusterItt];
+  var majorErrors = 0;
+  for clusterItt := 0; clusterItt < len(sortedClusters); clusterItt++ {
+    var cluster = sortedClusters[clusterItt];
     // Use a Four color theorem algorithm to ensure no neighboring clusters share color
     // TODO: Make this time deterministic! Don't randomly shuffle colors untill it works, but instead shuffle them intelligently.
-    let foundValid = false;
-    cluster.symbol = null;
-    let randomStartColor = Math.floor(Math.random() * syms.length);
-    for (let symbolItt = 0; symbolItt < syms.length; symbolItt++) {
-      let newSymbol = (randomStartColor + symbolItt) % syms.length;
-      let isValid = true;
-      cluster.neighbors.forEach((neighbor) => {
+    var foundValid = false;
+    cluster.symbol = -1;
+    var randomStartColor = rand.IntN(len(syms));
+    for symbolItt := 0; symbolItt < len(syms); symbolItt++ {
+      var newSymbol = rune((randomStartColor + symbolItt) % len(syms));
+      var isValid = true;
+	  for _, neighbor := range cluster.neighbors {
         if (clusters[neighbor].symbol == newSymbol) {
           isValid = false;
         }
-      });
+      }
       if (isValid) {
         foundValid = true;
         cluster.symbol = newSymbol;
@@ -121,53 +123,58 @@ func dropSyms(rows, cols int, syms []rune, opt Options) [][]rune {
     }
     if (!foundValid) {
       cluster.nudgingNeighbor++;
-      if (cluster.nudgingNeighbor >= cluster.neighbors.size) {
-        //console.log(
-        //  "Could not find valid color for " +
-        //    sortedClusters[clusterItt].clusterID
-        //);
-        cluster.nudgingColors++;
+      if (cluster.nudgingNeighbor >= len(cluster.neighbors)) {
         majorErrors++;
         if (majorErrors > opt.errorsAllowed) {
-          console.log("dropSyms failed to find a valid configuration!");
+			    fmt.Println("dropSyms failed to find a valid configuration!");
           if (opt.failSilently) {
             break;
           } else {
-            return null;
+            return nil;
           }
         }
       }
-      let targetCluster = Array.from(cluster.neighbors)[
-        cluster.nudgingNeighbor % cluster.neighbors.size
-      ];
-      //console.log(
-      //  "Trying to nudge " +
-      //    targetCluster +
-      //    " due to " +
-      //    sortedClusters[clusterItt].clusterID
-      //);
-      clusters[targetCluster].symbol = null;
-      clusterItt =
-        [
-          Math.min(
-            clusters[targetCluster].sortedID,
-            sortedClusters[clusterItt].sortedID
-          ),
-        ] - 1;
+      var targetCluster = cluster.neighbors[cluster.nudgingNeighbor % len(cluster.neighbors)];
+      clusters[targetCluster].symbol = -1;
+      clusterItt = min( clusters[targetCluster].sortedID, sortedClusters[clusterItt].sortedID ) - 1;
     }
   }
   // Paint tiles
-  clusters.forEach((cluster) => {
-    cluster.members.forEach((tile) => {
-      if (cluster.symbol != undefined) {
+  for _, cluster := range clusters {
+  	for _, tile := range cluster.members {
+      if (cluster.symbol != -1) {
         returnValue[tile.x][tile.y] = syms[cluster.symbol];
       } else {
-        returnValue[tile.x][tile.y] =
-          syms[Math.floor(Math.random() * syms.length)];
+        returnValue[tile.x][tile.y] = syms[rand.IntN(len(syms))];
       }
-    });
-  });
+    };
+  };
+  return returnValue;
+}
 
-  debugMap = clusterMap;*/
+func removeRemainingTiles(remainingTiles []Vector2Int, removedTile Vector2Int){
+	//TODO: Since we know how remainingTiles are ordered, we could optimize this function quite a bit.
+	for i, checkTile := range remainingTiles {
+		if checkTile.x == removedTile.x && checkTile.y == removedTile.y {
+    		remainingTiles = append(remainingTiles[:i], remainingTiles[i+1:]...);
+			return;
+		}
+	}
+}
+
+func getneighbors(board [][]int, pos Vector2Int) []Vector2Int {
+  var returnValue []Vector2Int;
+  if (pos.x > 0) {
+	returnValue = append(returnValue, Vector2Int{x:pos.x - 1, y:pos.y});
+  }
+  if (pos.y > 0) {
+	returnValue = append(returnValue, Vector2Int{x:pos.x, y:pos.y - 1});
+  }
+  if (pos.x < len(board) - 1) {
+	returnValue = append(returnValue, Vector2Int{x:pos.x + 1, y:pos.y});
+  }
+  if (pos.y < len(board[0]) - 1) {
+	returnValue = append(returnValue, Vector2Int{x:pos.x, y:pos.y + 1});
+  }
   return returnValue;
 }
