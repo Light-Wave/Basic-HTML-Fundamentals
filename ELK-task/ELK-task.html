@@ -11,22 +11,53 @@
       <div id="board"></div>
       <div class="input">
         <label for="width">Width</label
-        ><input type="number" id="width" value="10" min="3" max="10" />
+        ><input type="number" id="width" value="10" min="3" max="9999" />
       </div>
       <div class="input">
         <label for="height">Height</label
-        ><input type="number" id="height" value="10" min="3" max="10" />
+        ><input type="number" id="height" value="10" min="3" max="9999" />
       </div>
       <div class="input">
         <label for="colorCount">Number of colors</label
-        ><input type="number" id="colorCount" value="4" min="4" max="10" />
+        ><input type="number" id="colorCount" value="4" min="4" max="9999" />
       </div>
       <div class="input">
         <label for="maxClusterSize">Max Cluster Size</label
-        ><input type="number" id="maxClusterSize" value="5" min="1" max="99" />
+        ><input
+          type="number"
+          id="maxClusterSize"
+          value="5"
+          min="1"
+          max="9999"
+        />
+      </div>
+      <div class="input">
+        <label for="acceptedErrors">Accepted errors</label
+        ><input
+          type="number"
+          id="acceptedErrors"
+          value="10"
+          min="0"
+          max="9999"
+        />
+      </div>
+      <div class="input">
+        <label for="stressTests">Stress Test Count</label
+        ><input
+          type="number"
+          id="stressTests"
+          value="10000"
+          min="1"
+          max="9999999"
+        />
+      </div>
+      <div class="input">
+        <label for="silentFail">Fail Silently</label
+        ><input type="checkbox" id="silentFail" checked />
       </div>
       <div class="input">
         <button onclick="readInput()">Generate</button>
+        <button onclick="stressTest()">Stress Test</button>
       </div>
     </div>
     <div class="left-side" id="validation">hello</div>

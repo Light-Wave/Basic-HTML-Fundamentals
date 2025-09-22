@@ -27,6 +27,9 @@ const heightInput = document.getElementById("height");
 const colorCountInput = document.getElementById("colorCount");
 const validationDiv = document.getElementById("validation");
 const maxClusterSizeInput = document.getElementById("maxClusterSize");
+const acceptedErrorsInput = document.getElementById("acceptedErrors");
+const silentFailInput = document.getElementById("silentFail");
+const stressTestsInput = document.getElementById("stressTests");
 let debugMap = [];
 
 function dropSyms_random(rows, cols, syms, opt) {
@@ -143,7 +146,7 @@ function dropSyms(rows, cols, syms, opt) {
         );*/
         cluster.nudgingColors++;
         majorErrors++;
-        if (majorErrors > opt.majorErrorsAllowed) {
+        if (majorErrors > opt.errorsAllowed) {
           console.log("dropSyms failed to find a valid configuration!");
           if (opt.failSilently) {
             break;
@@ -191,12 +194,16 @@ function dropSyms(rows, cols, syms, opt) {
 function generateBoard(width, height, symbolCount) {
   boardDiv.innerHTML = "";
   Options.maxClusterSize = maxClusterSizeInput.value;
+  Options.failSilently = silentFailInput.checked;
   let boardLayout = dropSyms(
     width,
     height,
     getSymbolSubset(symbolCount),
     Options
   );
+  if (boardLayout == null) {
+    return;
+  }
   const table = document.createElement("table");
   boardDiv.appendChild(table);
   for (let y = 0; y < height; y++) {
@@ -214,17 +221,26 @@ function generateBoard(width, height, symbolCount) {
 }
 
 function stressTest() {
+  validationDiv.innerHTML = "";
   let fails = 0;
   let sucsesses = 0;
-  for (let i = 0; i < 10000; i++) {
-    let boardLayout = dropSyms(10, 10, getSymbolSubset(5), Options);
+  Options.errorsAllowed = acceptedErrorsInput.value;
+  const testCount = stressTestsInput.value;
+  Options.failSilently = silentFailInput.checked;
+  const colorCount = colorCountInput.value;
+  for (let i = 0; i < testCount; i++) {
+    let boardLayout = dropSyms(10, 10, getSymbolSubset(colorCount), Options);
     if (boardLayout == null || !validateInput(boardLayout)) {
       fails++;
     } else {
       sucsesses++;
     }
   }
+  validationDiv.innerHTML = "";
   console.log("Ran tests; " + sucsesses + " sucesses, " + fails + " fails.");
+
+  addValidationOutput("Tests successful: ", sucsesses, testCount);
+  addValidationOutput("Tests failed: ", fails, 0);
 }
 function validateInput(boardLayout) {
   validationDiv.innerHTML = "";
@@ -399,4 +415,3 @@ function getneighbors(board, posX, posY) {
 
 generateColors();
 readInput();
-stressTest();
