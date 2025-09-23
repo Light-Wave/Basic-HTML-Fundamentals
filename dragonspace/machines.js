@@ -1,24 +1,47 @@
 class SvgHolder {
   imgScr;
   img;
+  color;
   constructor(data) {
+    if (data.color == null) {
+      this.color == "black";
+    } else {
+      this.color = data.color;
+    }
     if (data.imgSrc == null) {
       return;
     }
-    if (data.color == null) {
-      data.color == "black";
-    }
-    if (!data.imgScr.incudes(".svg")) {
-      data.imgScr = data.imgScr + ".svg";
+    this.imgScr = data.imgScr;
+    if (!this.imgScr.incudes(".svg")) {
+      this.imgScr = this.imgScr + ".svg";
     }
     startAsync(1);
-    fetch("../icons/ffffff/transparent/1x1/" + data.imgSrc)
+    fetch("../icons/ffffff/transparent/1x1/" + this.imgSrc)
       .then((r) => r.text())
       .then((text) => {
-        data.img = text.replace("#fff", data.color);
+        this.img = text.replace("#fff", this.color);
 
         endAsync();
       });
+  }
+  resolveCopyFrom(data) {
+    if (data.color != null) {
+      data.color == "black";
+    }
+    if (data.imgScr != null) {
+      this.imgScr = data.imgScr;
+      if (!this.imgScr.incudes(".svg")) {
+        this.imgScr = this.imgScr + ".svg";
+      }
+      startAsync(1);
+      fetch("../icons/ffffff/transparent/1x1/" + this.imgSrc)
+        .then((r) => r.text())
+        .then((text) => {
+          this.img = text.replace("#fff", this.color);
+
+          endAsync();
+        });
+    }
   }
 }
 
@@ -28,6 +51,9 @@ class Race extends SvgHolder {
   production;
   constructor(data) {
     super(data);
+    this.name = data.name;
+    this.consumption = data.consumption;
+    this.production = data.production;
   }
 }
 
