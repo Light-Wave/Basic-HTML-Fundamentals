@@ -158,31 +158,26 @@ const resources = [
   },
 ];
 const machines = [
-  { name: "Idle", crew: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+  { name: "Idle", crew: [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
   {
     name: "Drone Hub",
-    producePerProd: [{ ore_iron: 1 }],
+    producePerProd: [{ energy: 1 }],
   },
   {
-    name: "Copper Mine",
+    name: "Mine",
     bonusesUsed: ["metalworkingBonus"],
-    producePerProd: [{ ore_copper: 1 }],
+    producePerProd: [{ metal: 1 }],
   },
   {
     name: "Farming",
     bonusesUsed: ["farmingBonus"],
-    producePerProd: [{ wheat: 1 }],
+    producePerProd: [{ food: 1 }],
   },
   {
-    name: "Tin Flowers",
-    bonusesUsed: ["farmingBonus", "metalworkingBonus"],
-    producePerProd: [{ wheat: 1 }, { ore_tin: 1 }],
-  },
-  {
-    name: "Smelter",
+    name: "Factory",
     bonusesUsed: ["metalworkingBonus"],
-    producePerProd: [{ iron_ingot: 1 }],
-    expensesPerPop: [{ ore_iron: 2 }],
+    producePerProd: [{ machine_parts: 1 }],
+    expensesPerPop: [{ metal: 2 }],
   },
 ];
 let mousedOverCrew = -1;
